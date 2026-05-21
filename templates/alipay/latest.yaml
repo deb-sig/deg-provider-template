@@ -1,0 +1,54 @@
+schema: deg.import.v1
+id: alipay
+name: 支付宝账单
+
+template:
+  fileFormat: csv
+  encoding: GBK
+  delimiter: ","
+  skipLeadingRows: 22
+  dateFormat: yyyy-MM-dd HH:mm:ss
+  defaultMinusAccount: Assets:FIXME
+  defaultPlusAccount: Expenses:FIXME
+  defaultCurrency: CNY
+  sourceHeaders:
+    - 交易时间
+    - 交易分类
+    - 交易对方
+    - 对方账号
+    - 商品说明
+    - 收/支
+    - 金额
+    - 收/付款方式
+    - 交易状态
+    - 交易订单号
+    - 商家订单号
+    - 备注
+  columns:
+    date: 交易时间
+    amount: 金额
+    payee: 交易对方
+    narration: 商品说明
+    type: 收/支
+templateRules:
+  - id: 支付宝支出
+    name: 支出
+    when: 'raw[收/支] == "支出"'
+    actions:
+      type: send
+      minusAccount: Assets:FIXME
+      plusAccount: Expenses:FIXME
+
+  - id: 支付宝收入
+    name: 收入
+    when: 'raw[收/支] == "收入"'
+    actions:
+      type: recv
+      minusAccount: Income:FIXME
+      plusAccount: Assets:FIXME
+
+  - id: 支付宝不计收支
+    name: 不计收支
+    when: 'raw[收/支] == "不计收支"'
+    actions:
+      ignore: true

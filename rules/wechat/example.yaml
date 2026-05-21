@@ -1,0 +1,54 @@
+- id: 微信红包收入
+  when: 'raw[收/支] == "收入" && raw[支付方式] == "/" && raw[商品] == "/"'
+  actions:
+    targetAccount: Income:Wechat:RedPacket
+
+- id: 微信退款忽略
+  when: 'raw[当前状态] == "已全额退款" || raw[当前状态] == "对方已退还"'
+  actions:
+    ignore: true
+
+- id: 微信零钱提现
+  when: 'raw[收/支] == "/" && raw[交易类型] ~ "零钱提现"'
+  actions:
+    targetAccount: Assets:Digital:Wechat:Cash
+    commissionAccount: Expenses:Wechat:Commission
+
+- id: 微信午餐
+  when: 'raw[收/支] == "支出" && (raw[交易对方] ~ "云膳过桥米线" || raw[交易对方] ~ "餐厅") && raw[交易时间].time >= "11:00" && raw[交易时间].time <= "15:00"'
+  actions:
+    targetAccount: Expenses:Food:Meal:Lunch
+
+- id: 微信夜宵
+  when: 'raw[收/支] == "支出" && raw[交易对方] ~ "餐厅" && (raw[交易时间].time >= "23:00" || raw[交易时间].time <= "02:00")'
+  actions:
+    targetAccount: Expenses:Food:Meal:MidNight
+
+- id: 微信美团小额饮料
+  when: 'raw[收/支] == "支出" && raw[交易对方] ~ "美团平台商户" && raw[金额(元)] < 10'
+  actions:
+    targetAccount: Expenses:Food:Drink
+
+- id: 微信美团正餐
+  when: 'raw[收/支] == "支出" && raw[交易对方] ~ "美团平台商户" && raw[金额(元)] >= 10'
+  actions:
+    targetAccount: Expenses:Food:Meal
+
+- id: 微信支付方式-零钱
+  when: 'raw[支付方式] == "零钱"'
+  actions:
+    methodAccount: Assets:Digital:Wechat:Cash
+
+- id: 微信支付方式-零钱通
+  when: 'raw[支付方式] == "零钱通"'
+  actions:
+    methodAccount: Assets:Digital:Wechat:MiniFund
+
+- id: 微信订单元数据
+  actions:
+    metadata:
+      orderId: raw[交易单号]
+      merchantId: raw[商户单号]
+      method: raw[支付方式]
+      status: raw[当前状态]
+      txType: raw[交易类型]

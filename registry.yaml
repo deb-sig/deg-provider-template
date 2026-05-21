@@ -1,0 +1,25 @@
+version: 1
+templates:
+  - id: alipay
+    name: 支付宝账单
+    category: payment
+    tags:
+      - 支付
+      - 电商
+      - 购物
+      - 中国大陆
+    latest: "2026.05"
+    path: templates/alipay/2026.05.yaml
+    description: 支付宝 CSV 账单模板，支持 GBK 编码和基础收支方向规则。
+
+  - id: wechat
+    name: 微信支付账单
+    category: payment
+    tags:
+      - 支付
+      - 社交
+      - 购物
+      - 中国大陆
+    latest: "2026.05"
+    path: templates/wechat/2026.05.yaml
+    description: 微信支付 CSV 账单模板，支持金额前缀和基础收支方向规则。
