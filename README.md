@@ -17,16 +17,20 @@ templates/
     2026.05.yaml
 ```
 
-## Install
+## Usage
 
 ```bash
-deg template update
-deg template add alipay
-deg import --template alipay bill.csv
+deg template list
+deg import alipay bill.csv
 ```
 
-Manual import is also supported:
+Template refs are resolved by shape:
 
 ```bash
-deg template add --path ./templates/alipay/latest.yaml
+deg import wechat bill.csv
+deg import ./templates/wechat/latest.yaml bill.csv
+deg import https://example.com/wechat.yaml bill.csv
 ```
+
+`wechat` reads the online registry directly. Local paths and HTTP(S) URLs are
+used only for the current import and are not cached by DEG.
