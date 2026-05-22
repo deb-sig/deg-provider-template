@@ -9,6 +9,8 @@ templates:
       - 购物
       - 中国大陆
     latest: "2026.05"
+    versions:
+      - "2026.05"
     path: templates/alipay/2026.05.yaml
     starterRules: rules/alipay/example.yaml
     description: 支付宝 CSV 账单模板，支持 GBK 编码和基础收支方向规则。
@@ -22,6 +24,8 @@ templates:
       - 购物
       - 中国大陆
     latest: "2026.05"
+    versions:
+      - "2026.05"
     path: templates/wechat/2026.05.yaml
     starterRules: rules/wechat/example.yaml
     description: 微信支付 CSV 账单模板，支持金额前缀和基础收支方向规则。
