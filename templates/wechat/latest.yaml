@@ -32,22 +32,22 @@ template:
 templateRules:
   - id: 微信支出
     name: 支出
-    when: 'raw[收/支] == "支出"'
+    when: raw[收/支] == "支出"
     actions:
       type: send
-      minusAccount: Assets:FIXME
-      plusAccount: Expenses:FIXME
+      from: Assets:FIXME
+      to: Expenses:FIXME
 
   - id: 微信收入
     name: 收入
-    when: 'raw[收/支] == "收入"'
+    when: raw[收/支] == "收入"
     actions:
       type: recv
-      minusAccount: Income:FIXME
-      plusAccount: Assets:FIXME
+      from: Income:FIXME
+      to: Assets:FIXME
 
   - id: 微信中性交易
     name: /
-    when: 'raw[收/支] == "/"'
+    when: raw[收/支] == "/"
     actions:
       ignore: true

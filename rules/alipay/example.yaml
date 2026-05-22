@@ -1,48 +1,54 @@
 - id: 支付宝收入到账余额
-  when: 'raw[收/支] == "收入"'
+  when: raw[收/支] == "收入"
   actions:
-    targetAccount: Income:FIXME
-    methodAccount: Assets:Alipay
+    from: Income:FIXME
+    to: Assets:Alipay
 
 - id: 支付宝退款忽略
-  when: 'raw[交易状态] == "退款成功" || raw[交易状态] == "交易关闭"'
+  when: raw[交易状态] == "退款成功" || raw[交易状态] == "交易关闭"
   actions:
     ignore: true
 
 - id: 支付宝日用百货大额
-  when: 'raw[交易分类] == "日用百货" && raw[金额] >= 10'
+  when: raw[交易分类] == "日用百货" && raw[金额] >= 10
   actions:
-    targetAccount: Expenses:Groceries
+    to: Expenses:Groceries
 
 - id: 支付宝日用百货小额
-  when: 'raw[交易分类] == "日用百货" && raw[金额] < 10'
+  when: raw[交易分类] == "日用百货" && raw[金额] < 10
   actions:
-    targetAccount: Expenses:Food:Drink
+    to: Expenses:Food:Drink
 
 - id: 支付宝午餐
-  when: 'raw[交易分类] == "餐饮美食" && raw[交易时间].time >= "11:00" && raw[交易时间].time <= "14:00"'
+  when: >-
+    raw[交易分类] == "餐饮美食"
+    && raw[交易时间].time >= "11:00"
+    && raw[交易时间].time <= "14:00"
   actions:
-    targetAccount: Expenses:Food:Lunch
+    to: Expenses:Food:Lunch
 
 - id: 支付宝晚餐
-  when: 'raw[交易分类] == "餐饮美食" && raw[交易时间].time >= "16:00" && raw[交易时间].time <= "22:00"'
+  when: >-
+    raw[交易分类] == "餐饮美食"
+    && raw[交易时间].time >= "16:00"
+    && raw[交易时间].time <= "22:00"
   actions:
-    targetAccount: Expenses:Food:Dinner
+    to: Expenses:Food:Dinner
 
 - id: 支付宝余额
-  when: 'raw[收/付款方式] == "余额"'
+  when: raw[收/付款方式] == "余额"
   actions:
-    methodAccount: Assets:Alipay
+    from: Assets:Alipay
 
 - id: 支付宝余额宝
-  when: 'raw[收/付款方式] == "余额宝"'
+  when: raw[收/付款方式] == "余额宝"
   actions:
-    methodAccount: Assets:Alipay
+    from: Assets:Alipay
 
 - id: 支付宝交通银行信用卡
-  when: 'raw[收/付款方式] == "交通银行信用卡(7449)"'
+  when: raw[收/付款方式] == "交通银行信用卡(7449)"
   actions:
-    methodAccount: Liabilities:CC:COMM:7449
+    from: Liabilities:CC:COMM:7449
 
 - id: 支付宝订单元数据
   actions:
