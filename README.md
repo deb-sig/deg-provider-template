@@ -21,6 +21,7 @@ templates/
 
 ```bash
 deg template list
+deg config init wechat --output ./wechat-rules.yaml
 deg import alipay bill.csv
 ```
 
@@ -34,3 +35,6 @@ deg import https://example.com/wechat.yaml bill.csv
 
 `wechat` reads the online registry directly. Local paths and HTTP(S) URLs are
 used only for the current import and are not cached by DEG.
+
+`deg config init` writes a local personal-rule skeleton. Users can edit account
+names in that file and pass it back with `deg import --rules`.
