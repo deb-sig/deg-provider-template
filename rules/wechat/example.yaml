@@ -1,5 +1,8 @@
 - id: 微信红包收入
-  when: raw[收/支] == "收入" && raw[支付方式] == "/" && raw[商品] == "/"
+  when: >-
+    raw[收/支] == "收入"
+    && raw[支付方式] == "/"
+    && raw[商品] == "/"
   actions:
     from: Income:Wechat:RedPacket
 
@@ -16,7 +19,8 @@
 - id: 微信午餐
   when: >-
     raw[收/支] == "支出"
-    && (raw[交易对方] ~ "云膳过桥米线" || raw[交易对方] ~ "餐厅")
+    && (raw[交易对方] ~ "云膳过桥米线"
+    || raw[交易对方] ~ "餐厅")
     && raw[交易时间].time >= "11:00"
     && raw[交易时间].time <= "15:00"
   actions:
@@ -26,17 +30,24 @@
   when: >-
     raw[收/支] == "支出"
     && raw[交易对方] ~ "餐厅"
-    && (raw[交易时间].time >= "23:00" || raw[交易时间].time <= "02:00")
+    && (raw[交易时间].time >= "23:00"
+    || raw[交易时间].time <= "02:00")
   actions:
     to: Expenses:Food:Meal:MidNight
 
 - id: 微信美团小额饮料
-  when: raw[收/支] == "支出" && raw[交易对方] ~ "美团平台商户" && raw[金额(元)] < 10
+  when: >-
+    raw[收/支] == "支出"
+    && raw[交易对方] ~ "美团平台商户"
+    && raw[金额(元)] < 10
   actions:
     to: Expenses:Food:Drink
 
 - id: 微信美团正餐
-  when: raw[收/支] == "支出" && raw[交易对方] ~ "美团平台商户" && raw[金额(元)] >= 10
+  when: >-
+    raw[收/支] == "支出"
+    && raw[交易对方] ~ "美团平台商户"
+    && raw[金额(元)] >= 10
   actions:
     to: Expenses:Food:Meal
 
