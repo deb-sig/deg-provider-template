@@ -11,10 +11,18 @@ registry.yaml
 templates/
   alipay/
     latest.yaml
-    2026.05.yaml
+    2026-05-23.yaml
   wechat/
     latest.yaml
-    2026.05.yaml
+    2026-04-28.yaml
+examples/
+  wechat/
+    latest/
+      bill.csv
+      expected.beancount
+    2026-04-28/
+      bill.xlsx
+      expected.beancount
 ```
 
 ## Usage
@@ -29,6 +37,7 @@ Template refs are resolved by shape:
 
 ```bash
 deg import wechat bill.csv
+deg import wechat@2026-04-28 bill.xlsx
 deg import ./templates/wechat/latest.yaml bill.csv
 deg import https://example.com/wechat.yaml bill.csv
 ```

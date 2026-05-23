@@ -8,12 +8,12 @@ templates:
       - 电商
       - 购物
       - 中国大陆
-    latest: "2026.05"
+    latest: "2026-05-23"
     versions:
-      - "2026.05"
-    path: templates/alipay/2026.05.yaml
+      - "2026-05-23"
+    path: templates/alipay/latest.yaml
     starterRules: rules/alipay/example.yaml
-    description: 支付宝 CSV 账单模板，支持 GBK 编码和基础收支方向规则。
+    description: 支付宝 CSV 账单模板。import alipay 使用 latest；历史格式使用 alipay@YYYY-MM-DD。
 
   - id: wechat
     name: 微信支付账单
@@ -23,9 +23,9 @@ templates:
       - 社交
       - 购物
       - 中国大陆
-    latest: "2026.05"
+    latest: "2026-04-28"
     versions:
-      - "2026.05"
-    path: templates/wechat/2026.05.yaml
+      - "2026-04-28"
+    path: templates/wechat/latest.yaml
     starterRules: rules/wechat/example.yaml
-    description: 微信支付 CSV 账单模板，支持金额前缀和基础收支方向规则。
+    description: 微信支付账单模板。import wechat 使用 latest；历史格式使用 wechat@YYYY-MM-DD。
