@@ -11,8 +11,8 @@ templates:
     latest: "2026-05-23"
     versions:
       - "2026-05-23"
-    path: templates/alipay/latest.yaml
-    starterRules: rules/alipay/example.yaml
+    path: alipay/latest/template.yaml
+    starterRules: alipay/latest/rules.yaml
     description: 支付宝 CSV 账单模板。import alipay 使用 latest；历史格式使用 alipay@YYYY-MM-DD。
 
   - id: wechat
@@ -26,6 +26,6 @@ templates:
     latest: "2026-04-28"
     versions:
       - "2026-04-28"
-    path: templates/wechat/latest.yaml
-    starterRules: rules/wechat/example.yaml
+    path: wechat/latest/template.yaml
+    starterRules: wechat/latest/rules.yaml
     description: 微信支付账单模板。import wechat 使用 latest；历史格式使用 wechat@YYYY-MM-DD。
