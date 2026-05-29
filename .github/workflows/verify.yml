@@ -1,0 +1,23 @@
+name: Verify templates
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Install DEG
+        run: go install github.com/deb-sig/double-entry-generator/v2@latest
+
+      - name: Verify templates
+        run: scripts/verify.sh

@@ -13,7 +13,7 @@ templates:
       - "2026-05-23"
     path: alipay/latest/template.yaml
     starterRules: alipay/latest/rules.yaml
-    description: 支付宝 CSV 账单模板。import alipay 使用 latest；历史格式使用 alipay@YYYY-MM-DD。
+    description: 支付宝 CSV 账单模板。 import alipay 使用 latest；历史格式使用 alipay@YYYY-MM-DD。
 
   - id: wechat
     name: 微信支付账单
@@ -28,7 +28,7 @@ templates:
       - "2026-04-28"
     path: wechat/latest/template.yaml
     starterRules: wechat/latest/rules.yaml
-    description: 微信支付账单模板。import wechat 使用 latest；历史格式使用 wechat@YYYY-MM-DD。
+    description: 微信支付账单模板。 import wechat 使用 latest；历史格式使用 wechat@YYYY-MM-DD。
 
   - id: oklink
     name: OKLink 代币账单
@@ -43,5 +43,342 @@ templates:
       - "2026-05-26"
     path: oklink/latest/template.yaml
     starterRules: oklink/latest/rules.yaml
-    description: OKLink 多链代币转账 CSV 模板。import oklink 使用 latest；历史格式使用 oklink@YYYY-MM-DD。
+    description: OKLink 多链代币转账 CSV 模板。 import oklink 使用 latest；历史格式使用 oklink@YYYY-MM-DD。
 
+  - id: td
+    name: TD 银行账单
+    category: bank
+    tags:
+      - 银行
+      - 加拿大
+      - TD
+    latest: "2026-05-27"
+    versions:
+      - "2026-05-27"
+    path: td/latest/template.yaml
+    starterRules: td/latest/rules.yaml
+    description: TD 银行 CSV 账单模板。 import td 使用 latest；历史格式使用 td@YYYY-MM-DD。
+
+  - id: bmo-debit
+    name: BMO 借记卡账单
+    category: bank
+    tags:
+      - 银行
+      - 加拿大
+      - BMO
+      - 借记卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: bmo-debit/latest/template.yaml
+    starterRules: bmo-debit/latest/rules.yaml
+    description: BMO 借记卡 CSV 账单模板。 import bmo-debit 使用 latest；历史格式使用 bmo-debit@YYYY-MM-DD。
+
+  - id: bmo-credit
+    name: BMO 信用卡账单
+    category: bank
+    tags:
+      - 银行
+      - 加拿大
+      - BMO
+      - 信用卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: bmo-credit/latest/template.yaml
+    starterRules: bmo-credit/latest/rules.yaml
+    description: BMO 信用卡 CSV 账单模板。 import bmo-credit 使用 latest；历史格式使用 bmo-credit@YYYY-MM-DD。
+
+  - id: cmb-credit
+    name: 招商银行信用卡账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 招商银行
+      - 信用卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: cmb-credit/latest/template.yaml
+    starterRules: cmb-credit/latest/rules.yaml
+    description: 招商银行信用卡 CSV 账单模板。 import cmb-credit 使用 latest；历史格式使用 cmb-credit@YYYY-MM-DD。
+
+  - id: cmb-debit
+    name: 招商银行借记卡账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 招商银行
+      - 借记卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: cmb-debit/latest/template.yaml
+    starterRules: cmb-debit/latest/rules.yaml
+    description: 招商银行借记卡 CSV 账单模板。 import cmb-debit 使用 latest；历史格式使用 cmb-debit@YYYY-MM-DD。
+
+  - id: bocom_credit
+    name: 交通银行信用卡账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 交通银行
+      - 信用卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: bocom_credit/latest/template.yaml
+    starterRules: bocom_credit/latest/rules.yaml
+    description: 交通银行信用卡 CSV 账单模板。 import bocom_credit 使用 latest；历史格式使用 bocom_credit@YYYY-MM-DD。
+
+  - id: bocom_debit
+    name: 交通银行借记卡账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 交通银行
+      - 借记卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: bocom_debit/latest/template.yaml
+    starterRules: bocom_debit/latest/rules.yaml
+    description: 交通银行借记卡 CSV 账单模板。 import bocom_debit 使用 latest；历史格式使用 bocom_debit@YYYY-MM-DD。
+
+  - id: abc_debit
+    name: 农业银行借记卡账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 农业银行
+      - 借记卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: abc_debit/latest/template.yaml
+    starterRules: abc_debit/latest/rules.yaml
+    description: 农业银行借记卡 CSV 账单模板。 import abc_debit 使用 latest；历史格式使用 abc_debit@YYYY-MM-DD。
+
+  - id: citic-credit
+    name: 中信银行信用卡账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 中信银行
+      - 信用卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: citic-credit/latest/template.yaml
+    starterRules: citic-credit/latest/rules.yaml
+    description: 中信银行信用卡 XLS 账单模板。 import citic-credit 使用 latest；历史格式使用 citic-credit@YYYY-MM-DD。
+
+  - id: hsbchk-debit
+    name: 汇丰香港借记卡账单
+    category: bank
+    tags:
+      - 银行
+      - 香港
+      - HSBC
+      - 借记卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: hsbchk-debit/latest/template.yaml
+    starterRules: hsbchk-debit/latest/rules.yaml
+    description: 汇丰香港借记卡 CSV 账单模板。 import hsbchk-debit 使用 latest；历史格式使用 hsbchk-debit@YYYY-MM-DD。
+
+  - id: hsbchk-credit
+    name: 汇丰香港信用卡账单
+    category: bank
+    tags:
+      - 银行
+      - 香港
+      - HSBC
+      - 信用卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: hsbchk-credit/latest/template.yaml
+    starterRules: hsbchk-credit/latest/rules.yaml
+    description: 汇丰香港信用卡 CSV 账单模板。 import hsbchk-credit 使用 latest；历史格式使用 hsbchk-credit@YYYY-MM-DD。
+
+  - id: icbc-credit
+    name: 工商银行信用卡账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 工商银行
+      - 信用卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: icbc-credit/latest/template.yaml
+    starterRules: icbc-credit/latest/rules.yaml
+    description: 工商银行信用卡 CSV 账单模板。 import icbc-credit 使用 latest；历史格式使用 icbc-credit@YYYY-MM-DD。
+
+  - id: icbc-debit-v1
+    name: 工商银行借记卡账单 v1
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 工商银行
+      - 借记卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: icbc-debit-v1/latest/template.yaml
+    starterRules: icbc-debit-v1/latest/rules.yaml
+    description: 工商银行借记卡 v1 CSV 账单模板。 import icbc-debit-v1 使用 latest；历史格式使用 icbc-debit-v1@YYYY-MM-DD。
+
+  - id: icbc-debit-v2
+    name: 工商银行借记卡账单 v2
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 工商银行
+      - 借记卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: icbc-debit-v2/latest/template.yaml
+    starterRules: icbc-debit-v2/latest/rules.yaml
+    description: 工商银行借记卡 v2 CSV 账单模板。 import icbc-debit-v2 使用 latest；历史格式使用 icbc-debit-v2@YYYY-MM-DD。
+
+  - id: boc-credit
+    name: 中国银行信用卡账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 中国银行
+      - 信用卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: boc-credit/latest/template.yaml
+    starterRules: boc-credit/latest/rules.yaml
+    description: 中国银行信用卡 CSV 账单模板。 import boc-credit 使用 latest；历史格式使用 boc-credit@YYYY-MM-DD。
+
+  - id: boc-debit
+    name: 中国银行借记卡账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 中国银行
+      - 借记卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: boc-debit/latest/template.yaml
+    starterRules: boc-debit/latest/rules.yaml
+    description: 中国银行借记卡 CSV 账单模板。 import boc-debit 使用 latest；历史格式使用 boc-debit@YYYY-MM-DD。
+
+  - id: jd
+    name: 京东账单
+    category: life
+    tags:
+      - 电商
+      - 购物
+      - 京东
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: jd/latest/template.yaml
+    starterRules: jd/latest/rules.yaml
+    description: 京东 CSV 账单模板。 import jd 使用 latest；历史格式使用 jd@YYYY-MM-DD。
+
+  - id: mt
+    name: 美团账单
+    category: life
+    tags:
+      - 生活服务
+      - 餐饮
+      - 美团
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: mt/latest/template.yaml
+    starterRules: mt/latest/rules.yaml
+    description: 美团 CSV 账单模板。 import mt 使用 latest；历史格式使用 mt@YYYY-MM-DD。
+
+  - id: spdb_debit
+    name: 浦发银行借记卡账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 浦发银行
+      - 借记卡
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: spdb_debit/latest/template.yaml
+    starterRules: spdb_debit/latest/rules.yaml
+    description: 浦发银行借记卡 XLS 账单模板。 import spdb_debit 使用 latest；历史格式使用 spdb_debit@YYYY-MM-DD。
+
+  - id: ccb
+    name: 建设银行账单
+    category: bank
+    tags:
+      - 银行
+      - 中国大陆
+      - 建设银行
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: ccb/latest/template.yaml
+    starterRules: ccb/latest/rules.yaml
+    description: 建设银行 XLS 账单模板。 import ccb 使用 latest；历史格式使用 ccb@YYYY-MM-DD。
+
+  - id: huobi
+    name: 火币交易账单
+    category: crypto
+    tags:
+      - 加密货币
+      - 交易所
+      - 火币
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: huobi/latest/template.yaml
+    starterRules: huobi/latest/rules.yaml
+    description: 火币 CSV 交易账单模板。 import huobi 使用 latest；历史格式使用 huobi@YYYY-MM-DD。
+
+  - id: htsec
+    name: 海通证券账单
+    category: securities
+    tags:
+      - 证券
+      - 中国大陆
+      - 海通证券
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: htsec/latest/template.yaml
+    starterRules: htsec/latest/rules.yaml
+    description: 海通证券 XLSX 账单模板。 import htsec 使用 latest；历史格式使用 htsec@YYYY-MM-DD。
+
+  - id: hxsec
+    name: 华西证券账单
+    category: securities
+    tags:
+      - 证券
+      - 中国大陆
+      - 华西证券
+    latest: "2026-05-28"
+    versions:
+      - "2026-05-28"
+    path: hxsec/latest/template.yaml
+    starterRules: hxsec/latest/rules.yaml
+    description: 华西证券 XLS 账单模板。 import hxsec 使用 latest；历史格式使用 hxsec@YYYY-MM-DD。

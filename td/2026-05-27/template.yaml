@@ -1,0 +1,13 @@
+schema: https://deg.dev/template-profile/v2
+id: td
+name: TD Bank
+template:
+    fileFormat: csv
+    delimiter: ','
+    sourceHeaders:
+        - date
+        - narration
+        - amountOut
+        - amountIn
+        - balance
+    defaultCurrency: CAD
