@@ -29,3 +29,19 @@ templates:
     path: wechat/latest/template.yaml
     starterRules: wechat/latest/rules.yaml
     description: 微信支付账单模板。import wechat 使用 latest；历史格式使用 wechat@YYYY-MM-DD。
+
+  - id: oklink
+    name: OKLink 代币账单
+    category: crypto
+    tags:
+      - 加密货币
+      - 区块链
+      - 多链
+      - OKLink
+    latest: "2026-05-26"
+    versions:
+      - "2026-05-26"
+    path: oklink/latest/template.yaml
+    starterRules: oklink/latest/rules.yaml
+    description: OKLink 多链代币转账 CSV 模板。import oklink 使用 latest；历史格式使用 oklink@YYYY-MM-DD。
+
