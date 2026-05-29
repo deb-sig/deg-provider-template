@@ -9,6 +9,8 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    env:
+      DEG_REF: main
     steps:
       - uses: actions/checkout@v4
 
@@ -17,7 +19,7 @@ jobs:
           go-version: stable
 
       - name: Install DEG
-        run: go install github.com/deb-sig/double-entry-generator/v2@latest
+        run: go install "github.com/deb-sig/double-entry-generator/v2@${DEG_REF}"
 
       - name: Verify templates
         run: scripts/verify.sh
