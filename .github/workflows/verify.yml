@@ -16,7 +16,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: stable
+          go-version: 1.24.x
 
       - name: Install DEG
         run: go install "github.com/deb-sig/double-entry-generator/v2@${DEG_REF}"
