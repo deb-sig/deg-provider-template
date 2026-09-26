@@ -31,37 +31,37 @@ templateRules:
 
 personalRules:
     - id: 电费支出
-      when: (<对手信息> ~ "电费" || <对手信息> ~ "网上国网" || <对手信息> ~ "国网") && <交易金额> < 0
+      when: (payee ~ "电费" || payee ~ "网上国网" || payee ~ "国网") && <交易金额> < 0
       actions:
           to:
               account: Expenses:Electricity
 
     - id: 电费收入
-      when: (<对手信息> ~ "电费" || <对手信息> ~ "网上国网" || <对手信息> ~ "国网") && <交易金额> >= 0
+      when: (payee ~ "电费" || payee ~ "网上国网" || payee ~ "国网") && <交易金额> >= 0
       actions:
           from:
               account: Expenses:Electricity
 
     - id: 中国移动支出
-      when: <对手信息> ~ "中国移动" && <交易金额> < 0
+      when: payee ~ "中国移动" && <交易金额> < 0
       actions:
           to:
               account: Expenses:Mobile
 
     - id: 中国移动收入
-      when: <对手信息> ~ "中国移动" && <交易金额> >= 0
+      when: payee ~ "中国移动" && <交易金额> >= 0
       actions:
           from:
               account: Expenses:Mobile
 
     - id: 保险赔付收入
-      when: <对手信息> ~ "太平洋健康保险股份有限公司" && <客户摘要> ~ "汇入汇款" && <交易金额> >= 0
+      when: payee ~ "太平洋健康保险股份有限公司" && narration ~ "汇入汇款" && <交易金额> >= 0
       actions:
           from:
               account: Income:Insurance
 
     - id: 保险赔付支出
-      when: <对手信息> ~ "太平洋健康保险股份有限公司" && <客户摘要> ~ "汇入汇款" && <交易金额> < 0
+      when: payee ~ "太平洋健康保险股份有限公司" && narration ~ "汇入汇款" && <交易金额> < 0
       actions:
           to:
               account: Income:Insurance

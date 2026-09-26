@@ -41,31 +41,31 @@ templateRules:
 
 personalRules:
     - id: 信用卡还款
-      when: <交易说明> ~ "信用卡还款"
+      when: narration ~ "信用卡还款"
       actions:
           from:
               account: Equity:Transfers
 
     - id: 美团收入
-      when: <交易说明> ~ "美团" && (<交易说明> ~ "退货" || <交易说明> ~ "信用卡还款" || <交易说明> ~ "红包还款" || <交易说明> ~ "刷卡金返还" || <交易说明> ~ "自动购汇还款")
+      when: narration ~ "美团" && (narration ~ "退货" || narration ~ "信用卡还款" || narration ~ "红包还款" || narration ~ "刷卡金返还" || narration ~ "自动购汇还款")
       actions:
           from:
               account: Expenses:Food
 
     - id: 美团支出
-      when: <交易说明> ~ "美团" && (<交易说明> ~ "消费" || <交易说明> ~ "刷卡金扣回" || <交易说明> ~ "分期扣款" || <交易说明> ~ "自动购汇扣款")
+      when: narration ~ "美团" && (narration ~ "消费" || narration ~ "刷卡金扣回" || narration ~ "分期扣款" || narration ~ "自动购汇扣款")
       actions:
           to:
               account: Expenses:Food
 
     - id: 饿了么收入
-      when: <交易说明> ~ "饿了么" && (<交易说明> ~ "退货" || <交易说明> ~ "信用卡还款" || <交易说明> ~ "红包还款" || <交易说明> ~ "刷卡金返还" || <交易说明> ~ "自动购汇还款")
+      when: narration ~ "饿了么" && (narration ~ "退货" || narration ~ "信用卡还款" || narration ~ "红包还款" || narration ~ "刷卡金返还" || narration ~ "自动购汇还款")
       actions:
           from:
               account: Expenses:Food
 
     - id: 饿了么支出
-      when: <交易说明> ~ "饿了么" && (<交易说明> ~ "消费" || <交易说明> ~ "刷卡金扣回" || <交易说明> ~ "分期扣款" || <交易说明> ~ "自动购汇扣款")
+      when: narration ~ "饿了么" && (narration ~ "消费" || narration ~ "刷卡金扣回" || narration ~ "分期扣款" || narration ~ "自动购汇扣款")
       actions:
           to:
               account: Expenses:Food

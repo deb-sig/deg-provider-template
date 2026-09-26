@@ -32,108 +32,108 @@ templateRules:
 
 personalRules:
     - id: 公共交通支出
-      when: <交易描述> ~ "公共交通" && <支出> != ""
+      when: narration ~ "公共交通" && <支出> != ""
       actions:
           to:
               account: Expenses:Transport:Subway
 
     - id: 公共交通收入
-      when: <交易描述> ~ "公共交通" && <存入> != ""
+      when: narration ~ "公共交通" && <存入> != ""
       actions:
           from:
               account: Expenses:Transport:Subway
 
     - id: 游戏支出
-      when: (<交易描述> ~ "xbox" || <交易描述> ~ "steam" || <交易描述> ~ "游戏") && <支出> != ""
+      when: (narration ~ "xbox" || narration ~ "steam" || narration ~ "游戏") && <支出> != ""
       actions:
           to:
               account: Expenses:Relax:Game
 
     - id: 游戏收入
-      when: (<交易描述> ~ "xbox" || <交易描述> ~ "steam" || <交易描述> ~ "游戏") && <存入> != ""
+      when: (narration ~ "xbox" || narration ~ "steam" || narration ~ "游戏") && <存入> != ""
       actions:
           from:
               account: Expenses:Relax:Game
 
     - id: 培训支出
-      when: <交易描述> ~ "顾问有限公司" && <支出> != ""
+      when: narration ~ "顾问有限公司" && <支出> != ""
       actions:
           to:
               account: Expenses:Education:Training
 
     - id: 培训收入
-      when: <交易描述> ~ "顾问有限公司" && <存入> != ""
+      when: narration ~ "顾问有限公司" && <存入> != ""
       actions:
           from:
               account: Expenses:Education:Training
 
     - id: 房租支出
-      when: <交易描述> ~ "张林" && <支出> != ""
+      when: narration ~ "张林" && <支出> != ""
       actions:
           to:
               account: Expenses:Reside:Rent
 
     - id: 房租收入
-      when: <交易描述> ~ "张林" && <存入> != ""
+      when: narration ~ "张林" && <存入> != ""
       actions:
           from:
               account: Expenses:Reside:Rent
 
     - id: BCM0258支出
-      when: <交易描述> ~ "0258" && <支出> != ""
+      when: narration ~ "0258" && <支出> != ""
       actions:
           to:
               account: Assets:DC:BCM:0258
 
     - id: BCM0258收入
-      when: <交易描述> ~ "0258" && <存入> != ""
+      when: narration ~ "0258" && <存入> != ""
       actions:
           from:
               account: Assets:DC:BCM:0258
 
     - id: CMBC5669支出
-      when: <交易描述> ~ "5669" && <支出> != ""
+      when: narration ~ "5669" && <支出> != ""
       actions:
           to:
               account: Liabilities:CC:CMBC:5669
 
     - id: CMBC5669收入
-      when: <交易描述> ~ "5669" && <存入> != ""
+      when: narration ~ "5669" && <存入> != ""
       actions:
           from:
               account: Liabilities:CC:CMBC:5669
 
     - id: BCM4664支出
-      when: <交易描述> ~ "4664" && <支出> != ""
+      when: narration ~ "4664" && <支出> != ""
       actions:
           to:
               account: Liabilities:CC:BCM:4664
 
     - id: BCM4664收入
-      when: <交易描述> ~ "4664" && <存入> != ""
+      when: narration ~ "4664" && <存入> != ""
       actions:
           from:
               account: Liabilities:CC:BCM:4664
 
     - id: CMB4294支出
-      when: <交易描述> ~ "4294" && <支出> != ""
+      when: narration ~ "4294" && <支出> != ""
       actions:
           to:
               account: Liabilities:CC:CMB:4294
 
     - id: CMB4294收入
-      when: <交易描述> ~ "4294" && <存入> != ""
+      when: narration ~ "4294" && <存入> != ""
       actions:
           from:
               account: Liabilities:CC:CMB:4294
 
     - id: 忽略支付平台描述
-      when: <交易描述> ~ "支付宝" || <交易描述> ~ "微信" || <交易描述> ~ "钱袋宝" || <交易描述> ~ "京东"
+      when: narration ~ "支付宝" || narration ~ "微信" || narration ~ "钱袋宝" || narration ~ "京东"
       actions:
           ignore: true
 
     - id: 忽略曾三
-      when: <交易描述> ~ "曾三"
+      when: narration ~ "曾三"
       actions:
           ignore: true
 
@@ -174,13 +174,13 @@ personalRules:
               account: Liabilities:CC:BoC:4260
 
     - id: 网银在线返利
-      when: <交易描述> ~ "网银在线CHN" && <存入> != ""
+      when: narration ~ "网银在线CHN" && <存入> != ""
       actions:
           from:
               account: Income:BoC:Rebate
 
     - id: 工资收入
-      when: <交易描述> ~ "工资" && <存入> != ""
+      when: narration ~ "工资" && <存入> != ""
       actions:
           from:
               account: Income:BoC:Salary

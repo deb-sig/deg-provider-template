@@ -37,73 +37,73 @@ templateRules:
 
 personalRules:
     - id: 美团支出
-      when: <Merchant name> ~ "MEITUAN" && <Description> ~ "APPLEPAY MEITUAN" && <Credit / Debit> == DEBIT
+      when: payee ~ "MEITUAN" && narration ~ "APPLEPAY MEITUAN" && <Credit / Debit> == DEBIT
       actions:
           to:
               account: Expenses:Food:Delivery
 
     - id: 美团收入
-      when: <Merchant name> ~ "MEITUAN" && <Description> ~ "APPLEPAY MEITUAN" && <Credit / Debit> == CREDIT
+      when: payee ~ "MEITUAN" && narration ~ "APPLEPAY MEITUAN" && <Credit / Debit> == CREDIT
       actions:
           from:
               account: Expenses:Food:Delivery
 
     - id: 还款
-      when: <Description> ~ "PAYMENT - THANK YOU"
+      when: narration ~ "PAYMENT - THANK YOU"
       actions:
           from:
               account: Assets:Bank:HK:HSBC:Savings
 
     - id: 快餐支出
-      when: (<Merchant name> ~ "KFC RESTAURANT" || <Merchant name> ~ "MCDONALDS") && <Credit / Debit> == DEBIT
+      when: (payee ~ "KFC RESTAURANT" || payee ~ "MCDONALDS") && <Credit / Debit> == DEBIT
       actions:
           to:
               account: Expenses:Food:FastFood
 
     - id: 快餐收入
-      when: (<Merchant name> ~ "KFC RESTAURANT" || <Merchant name> ~ "MCDONALDS") && <Credit / Debit> == CREDIT
+      when: (payee ~ "KFC RESTAURANT" || payee ~ "MCDONALDS") && <Credit / Debit> == CREDIT
       actions:
           from:
               account: Expenses:Food:FastFood
 
     - id: 便利店支出
-      when: <Merchant name> ~ "7-ELEVEN" && <Credit / Debit> == DEBIT
+      when: payee ~ "7-ELEVEN" && <Credit / Debit> == DEBIT
       actions:
           to:
               account: Expenses:Groceries
 
     - id: 便利店收入
-      when: <Merchant name> ~ "7-ELEVEN" && <Credit / Debit> == CREDIT
+      when: payee ~ "7-ELEVEN" && <Credit / Debit> == CREDIT
       actions:
           from:
               account: Expenses:Groceries
 
     - id: 地铁支出
-      when: <Merchant name> ~ "METRO" && <Credit / Debit> == DEBIT
+      when: payee ~ "METRO" && <Credit / Debit> == DEBIT
       actions:
           to:
               account: Expenses:Transport
 
     - id: 地铁收入
-      when: <Merchant name> ~ "METRO" && <Credit / Debit> == CREDIT
+      when: payee ~ "METRO" && <Credit / Debit> == CREDIT
       actions:
           from:
               account: Expenses:Transport
 
     - id: 退款
-      when: <Description> ~ "RETURN"
+      when: narration ~ "RETURN"
       actions:
           from:
               account: Assets:Refund
 
     - id: 银联商户支出
-      when: <Merchant name> ~ "UNIONPAY MERCHANT" && <Credit / Debit> == DEBIT
+      when: payee ~ "UNIONPAY MERCHANT" && <Credit / Debit> == DEBIT
       actions:
           to:
               account: Expenses:Shopping
 
     - id: 银联商户收入
-      when: <Merchant name> ~ "UNIONPAY MERCHANT" && <Credit / Debit> == CREDIT
+      when: payee ~ "UNIONPAY MERCHANT" && <Credit / Debit> == CREDIT
       actions:
           from:
               account: Expenses:Shopping

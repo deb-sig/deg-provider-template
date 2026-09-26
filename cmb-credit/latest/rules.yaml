@@ -46,42 +46,42 @@ templateRules:
 
 personalRules:
     - id: 掌上生活影票支出
-      when: <交易摘要> ~ "掌上生活影票" && <人民币金额> >= 0
+      when: narration ~ "掌上生活影票" && <人民币金额> >= 0
       actions:
           to:
               account: Expenses:Movie
 
     - id: 掌上生活影票收入
-      when: <交易摘要> ~ "掌上生活影票" && <人民币金额> < 0
+      when: narration ~ "掌上生活影票" && <人民币金额> < 0
       actions:
           from:
               account: Expenses:Movie
 
     - id: 手机银行饭票支出
-      when: <交易摘要> ~ "手机银行饭票" && <人民币金额> >= 0
+      when: narration ~ "手机银行饭票" && <人民币金额> >= 0
       actions:
           to:
               account: Expenses:Food
 
     - id: 手机银行饭票收入
-      when: <交易摘要> ~ "手机银行饭票" && <人民币金额> < 0
+      when: narration ~ "手机银行饭票" && <人民币金额> < 0
       actions:
           from:
               account: Expenses:Food
 
     - id: 中国移动支出
-      when: <交易摘要> ~ "中国移动" && <人民币金额> >= 0
+      when: narration ~ "中国移动" && <人民币金额> >= 0
       actions:
           to:
               account: Expenses:Mobile
 
     - id: 中国移动收入
-      when: <交易摘要> ~ "中国移动" && <人民币金额> < 0
+      when: narration ~ "中国移动" && <人民币金额> < 0
       actions:
           from:
               account: Expenses:Mobile
 
     - id: 忽略财付通
-      when: <交易摘要> ~ "财付通"
+      when: narration ~ "财付通"
       actions:
           ignore: true

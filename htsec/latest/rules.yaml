@@ -60,7 +60,7 @@ personalRules:
           ignore: true
 
     - id: Rule1 兴业转债卖出
-      when: <证券名称> ~ "兴业转债" && <操作> ~ "卖"
+      when: <证券名称> ~ "兴业转债" && narration ~ "卖"
       actions:
           vars:
               cash: Assets:Rule1:Cash

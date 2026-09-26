@@ -33,78 +33,78 @@ templateRules:
 
 personalRules:
     - id: 取现收入
-      when: <Description> ~ "WITHDRAWAL" && <Billing amount> >= 0
+      when: payee ~ "WITHDRAWAL" && <Billing amount> >= 0
       actions:
           from:
               account: Assets:Cash
 
     - id: 取现支出
-      when: <Description> ~ "WITHDRAWAL" && <Billing amount> < 0
+      when: payee ~ "WITHDRAWAL" && <Billing amount> < 0
       actions:
           to:
               account: Assets:Cash
 
     - id: 工资收入
-      when: <Description> ~ "SALARY PAYMENT" && <Billing amount> >= 0
+      when: payee ~ "SALARY PAYMENT" && <Billing amount> >= 0
       actions:
           from:
               account: Income:Salary
 
     - id: 工资支出
-      when: <Description> ~ "SALARY PAYMENT" && <Billing amount> < 0
+      when: payee ~ "SALARY PAYMENT" && <Billing amount> < 0
       actions:
           to:
               account: Income:Salary
 
     - id: 转入收入
-      when: <Description> ~ "TRANSFER FROM" && <Billing amount> >= 0
+      when: payee ~ "TRANSFER FROM" && <Billing amount> >= 0
       actions:
           from:
               account: Income:Transfer
 
     - id: 转入支出
-      when: <Description> ~ "TRANSFER FROM" && <Billing amount> < 0
+      when: payee ~ "TRANSFER FROM" && <Billing amount> < 0
       actions:
           to:
               account: Income:Transfer
 
     - id: 账单缴费收入
-      when: <Description> ~ "BILL PAYMENT" && <Billing amount> >= 0
+      when: payee ~ "BILL PAYMENT" && <Billing amount> >= 0
       actions:
           from:
               account: Expenses:Utilities
 
     - id: 账单缴费支出
-      when: <Description> ~ "BILL PAYMENT" && <Billing amount> < 0
+      when: payee ~ "BILL PAYMENT" && <Billing amount> < 0
       actions:
           to:
               account: Expenses:Utilities
 
     - id: 超市收入
-      when: (<Description> ~ "POS PURCHASE" || <Description> ~ "SUPERMARKET") && <Billing amount> >= 0
+      when: (payee ~ "POS PURCHASE" || payee ~ "SUPERMARKET") && <Billing amount> >= 0
       actions:
           from:
               account: Expenses:Groceries
 
     - id: 超市支出
-      when: (<Description> ~ "POS PURCHASE" || <Description> ~ "SUPERMARKET") && <Billing amount> < 0
+      when: (payee ~ "POS PURCHASE" || payee ~ "SUPERMARKET") && <Billing amount> < 0
       actions:
           to:
               account: Expenses:Groceries
 
     - id: 利息收入
-      when: <Description> ~ "INTEREST CREDIT" && <Billing amount> >= 0
+      when: payee ~ "INTEREST CREDIT" && <Billing amount> >= 0
       actions:
           from:
               account: Income:Interest
 
     - id: 利息支出
-      when: <Description> ~ "INTEREST CREDIT" && <Billing amount> < 0
+      when: payee ~ "INTEREST CREDIT" && <Billing amount> < 0
       actions:
           to:
               account: Income:Interest
 
     - id: 忽略TRIPLEZ
-      when: <Description> ~ "TRIPLE Z"
+      when: payee ~ "TRIPLE Z"
       actions:
           ignore: true

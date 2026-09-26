@@ -52,25 +52,25 @@ templateRules:
 
 personalRules:
     - id: 存款利息收入
-      when: <对方户名> ~ "应付个人活期储蓄存款利息" && <借贷> ~ "贷"
+      when: payee ~ "应付个人活期储蓄存款利息" && <借贷> ~ "贷"
       actions:
           from:
               account: Income:Interest
 
     - id: 存款利息支出
-      when: <对方户名> ~ "应付个人活期储蓄存款利息" && <借贷> ~ "借"
+      when: payee ~ "应付个人活期储蓄存款利息" && <借贷> ~ "借"
       actions:
           to:
               account: Income:Interest
 
     - id: 信用卡还款收入
-      when: <对方户名> ~ "信用卡还款" && <借贷> ~ "贷"
+      when: payee ~ "信用卡还款" && <借贷> ~ "贷"
       actions:
           from:
               account: Equity:Transfers
 
     - id: 信用卡还款支出
-      when: <对方户名> ~ "信用卡还款" && <借贷> ~ "借"
+      when: payee ~ "信用卡还款" && <借贷> ~ "借"
       actions:
           to:
               account: Equity:Transfers
@@ -88,13 +88,13 @@ personalRules:
               account: Equity:Transfers
 
     - id: 网上国网收入
-      when: <对方户名> ~ "网上国网" && <借贷> ~ "贷"
+      when: payee ~ "网上国网" && <借贷> ~ "贷"
       actions:
           from:
               account: Expenses:Electricity
 
     - id: 网上国网支出
-      when: <对方户名> ~ "网上国网" && <借贷> ~ "借"
+      when: payee ~ "网上国网" && <借贷> ~ "借"
       actions:
           to:
               account: Expenses:Electricity

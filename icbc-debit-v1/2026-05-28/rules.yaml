@@ -51,12 +51,12 @@ templateRules:
 
 personalRules:
     - id: 忽略财付通支付宝
-      when: <交易场所> ~ "财付通-" || <交易场所> ~ "支付宝-"
+      when: payee ~ "财付通-" || payee ~ "支付宝-"
       actions:
           ignore: true
 
     - id: 忽略蚂蚁基金赎回
-      when: <交易场所> ~ "支付宝" && <摘要> ~ "蚂蚁基金赎回到银行"
+      when: payee ~ "支付宝" && <摘要> ~ "蚂蚁基金赎回到银行"
       actions:
           ignore: true
 
@@ -73,7 +73,7 @@ personalRules:
               account: Liabilities:Bank:CMB:CreditCard
 
     - id: 忽略自动还款
-      when: <交易场所> ~ "广东XX分行银行卡中心" && <摘要> ~ "自动还款"
+      when: payee ~ "广东XX分行银行卡中心" && <摘要> ~ "自动还款"
       actions:
           ignore: true
 

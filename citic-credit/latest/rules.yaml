@@ -31,78 +31,78 @@ templateRules:
 
 personalRules:
     - id: 三快支出
-      when: <交易描述> ~ "三快" && <交易金额> >= 0
+      when: narration ~ "三快" && <交易金额> >= 0
       actions:
           to:
               account: Expenses:Food
 
     - id: 三快收入
-      when: <交易描述> ~ "三快" && <交易金额> < 0
+      when: narration ~ "三快" && <交易金额> < 0
       actions:
           from:
               account: Expenses:Food
 
     - id: 购物支出
-      when: (<交易描述> ~ "电子商务" || <交易描述> ~ "天猫" || <交易描述> ~ "京东" || <交易描述> ~ "特约商户") && <交易金额> >= 0
+      when: (narration ~ "电子商务" || narration ~ "天猫" || narration ~ "京东" || narration ~ "特约商户") && <交易金额> >= 0
       actions:
           to:
               account: Expenses:Shopping
 
     - id: 购物收入
-      when: (<交易描述> ~ "电子商务" || <交易描述> ~ "天猫" || <交易描述> ~ "京东" || <交易描述> ~ "特约商户") && <交易金额> < 0
+      when: (narration ~ "电子商务" || narration ~ "天猫" || narration ~ "京东" || narration ~ "特约商户") && <交易金额> < 0
       actions:
           from:
               account: Expenses:Shopping
 
     - id: 电费支出
-      when: (<交易描述> ~ "电费" || <交易描述> ~ "网上国网") && <交易金额> >= 0
+      when: (narration ~ "电费" || narration ~ "网上国网") && <交易金额> >= 0
       actions:
           to:
               account: Expenses:Electricity
 
     - id: 电费收入
-      when: (<交易描述> ~ "电费" || <交易描述> ~ "网上国网") && <交易金额> < 0
+      when: (narration ~ "电费" || narration ~ "网上国网") && <交易金额> < 0
       actions:
           from:
               account: Expenses:Electricity
 
     - id: 交通支出
-      when: (<交易描述> ~ "滴滴出行" || <交易描述> ~ "嘀嘀" || <交易描述> ~ "中国石油") && <交易金额> >= 0
+      when: (narration ~ "滴滴出行" || narration ~ "嘀嘀" || narration ~ "中国石油") && <交易金额> >= 0
       actions:
           to:
               account: Expenses:Transport
 
     - id: 交通收入
-      when: (<交易描述> ~ "滴滴出行" || <交易描述> ~ "嘀嘀" || <交易描述> ~ "中国石油") && <交易金额> < 0
+      when: (narration ~ "滴滴出行" || narration ~ "嘀嘀" || narration ~ "中国石油") && <交易金额> < 0
       actions:
           from:
               account: Expenses:Transport
 
     - id: 现金奖励支出
-      when: <交易描述> ~ "现金奖励" && <交易金额> >= 0
+      when: narration ~ "现金奖励" && <交易金额> >= 0
       actions:
           to:
               account: Income:Rewards
 
     - id: 现金奖励收入
-      when: <交易描述> ~ "现金奖励" && <交易金额> < 0
+      when: narration ~ "现金奖励" && <交易金额> < 0
       actions:
           from:
               account: Income:Rewards
 
     - id: 忽略云闪付财付通
-      when: <交易描述> ~ "财付通(银联云闪付)"
+      when: narration ~ "财付通(银联云闪付)"
       actions:
           ignore: true
 
     - id: 财付通还款支出
-      when: <交易描述> ~ "财付通还款" && <交易金额> >= 0
+      when: narration ~ "财付通还款" && <交易金额> >= 0
       actions:
           to:
               account: Assets:WeChat
 
     - id: 财付通还款收入
-      when: <交易描述> ~ "财付通还款" && <交易金额> < 0
+      when: narration ~ "财付通还款" && <交易金额> < 0
       actions:
           from:
               account: Assets:WeChat

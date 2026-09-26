@@ -40,18 +40,18 @@ templateRules:
 
 personalRules:
     - id: 忽略财付通支付宝
-      when: <交易场所> ~ "财付通" || <交易场所> ~ "支付宝"
+      when: payee ~ "财付通" || payee ~ "支付宝"
       actions:
           ignore: true
 
     - id: 高速支出
-      when: <交易场所> ~ "广东联合电子收费股份" && <记账金额(支出)> != "" && <记账金额(支出)> != "-"
+      when: payee ~ "广东联合电子收费股份" && <记账金额(支出)> != "" && <记账金额(支出)> != "-"
       actions:
           to:
               account: Expenses:Transport:Highway
 
     - id: 高速收入
-      when: <交易场所> ~ "广东联合电子收费股份" && <记账金额(收入)> != "" && <记账金额(收入)> != "-"
+      when: payee ~ "广东联合电子收费股份" && <记账金额(收入)> != "" && <记账金额(收入)> != "-"
       actions:
           from:
               account: Expenses:Transport:Highway

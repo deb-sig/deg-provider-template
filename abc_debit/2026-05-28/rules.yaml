@@ -48,61 +48,61 @@ templateRules:
 
 personalRules:
     - id: 转存收入
-      when: <交易摘要> ~ "转存" && <交易金额> >= 0
+      when: narration ~ "转存" && <交易金额> >= 0
       actions:
           from:
               account: Equity:Transfers
 
     - id: 转存支出
-      when: <交易摘要> ~ "转存" && <交易金额> < 0
+      when: narration ~ "转存" && <交易金额> < 0
       actions:
           to:
               account: Equity:Transfers
 
     - id: 财付通收入
-      when: <交易摘要> ~ "财付通" && <交易金额> >= 0
+      when: narration ~ "财付通" && <交易金额> >= 0
       actions:
           from:
               account: Expenses:Transport:Transit
 
     - id: 财付通支出
-      when: <交易摘要> ~ "财付通" && <交易金额> < 0
+      when: narration ~ "财付通" && <交易金额> < 0
       actions:
           to:
               account: Expenses:Transport:Transit
 
     - id: 正常还款收入
-      when: <交易摘要> ~ "正常还款" && <交易金额> >= 0
+      when: narration ~ "正常还款" && <交易金额> >= 0
       actions:
           from:
               account: Liabilities:Loans:Personal
 
     - id: 正常还款支出
-      when: <交易摘要> ~ "正常还款" && <交易金额> < 0
+      when: narration ~ "正常还款" && <交易金额> < 0
       actions:
           to:
               account: Liabilities:Loans:Personal
 
     - id: 结息收入
-      when: <交易摘要> ~ "结息" && <交易金额> >= 0
+      when: narration ~ "结息" && <交易金额> >= 0
       actions:
           from:
               account: Income:Interest
 
     - id: 结息支出
-      when: <交易摘要> ~ "结息" && <交易金额> < 0
+      when: narration ~ "结息" && <交易金额> < 0
       actions:
           to:
               account: Income:Interest
 
     - id: 利息税收入
-      when: <交易摘要> ~ "利息税" && <交易金额> >= 0
+      when: narration ~ "利息税" && <交易金额> >= 0
       actions:
           from:
               account: Expenses:Tax
 
     - id: 利息税支出
-      when: <交易摘要> ~ "利息税" && <交易金额> < 0
+      when: narration ~ "利息税" && <交易金额> < 0
       actions:
           to:
               account: Expenses:Tax

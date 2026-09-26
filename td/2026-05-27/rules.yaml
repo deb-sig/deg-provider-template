@@ -32,7 +32,7 @@ templateRules:
 
 personalRules:
     - id: 大统华
-      when: <narration> ~ "T T"
+      when: narration ~ "T T"
       actions:
           tags:
               - tt_tag
@@ -40,7 +40,7 @@ personalRules:
               account: Expenses:Grocery
 
     - id: Dollarama
-      when: <narration> ~ "DOLLARAMA"
+      when: narration ~ "DOLLARAMA"
       actions:
           tags:
               - grocery_tag1
@@ -49,13 +49,13 @@ personalRules:
               account: Expenses:Grocery
 
     - id: 工资
-      when: <narration> ~ "DEVELOPM MSP" && <amountIn> != ""
+      when: narration ~ "DEVELOPM MSP" && <amountIn> != ""
       actions:
           from:
               account: Income:Salary
 
     - id: 收入转账
-      when: <narration> ~ "SEND E-TFR" && <amountIn> != ""
+      when: narration ~ "SEND E-TFR" && <amountIn> != ""
       actions:
           from:
               account: Income:FIXME

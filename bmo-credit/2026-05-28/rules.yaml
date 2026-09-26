@@ -31,7 +31,7 @@ templateRules:
 
 personalRules:
     - id: 大统华
-      when: <Description> ~ "T T"
+      when: narration ~ "T T"
       actions:
           tags:
               - tt_tag
@@ -39,25 +39,25 @@ personalRules:
               account: Expenses:Grocery
 
     - id: Costco
-      when: <Description> ~ "COSTCO"
+      when: narration ~ "COSTCO"
       actions:
           to:
               account: Expenses:Grocery
 
     - id: T&T超市
-      when: <Description> ~ "T&T SUPERMARKET"
+      when: narration ~ "T&T SUPERMARKET"
       actions:
           to:
               account: Expenses:Grocery
 
     - id: Jollibee
-      when: <Description> ~ "JOLLIBEE"
+      when: narration ~ "JOLLIBEE"
       actions:
           to:
               account: Expenses:Food:Lunch
 
     - id: Dollarama
-      when: <Description> ~ "DOLLARAMA"
+      when: narration ~ "DOLLARAMA"
       actions:
           tags:
               - grocery_tag1
@@ -66,13 +66,13 @@ personalRules:
               account: Expenses:Grocery
 
     - id: 工资
-      when: <Description> ~ "DEVELOPM MSP" && <Transaction Amount> < 0
+      when: narration ~ "DEVELOPM MSP" && <Transaction Amount> < 0
       actions:
           from:
               account: Income:Salary
 
     - id: 收入转账
-      when: <Description> ~ "SEND E-TFR" && <Transaction Amount> < 0
+      when: narration ~ "SEND E-TFR" && <Transaction Amount> < 0
       actions:
           from:
               account: Income:FIXME

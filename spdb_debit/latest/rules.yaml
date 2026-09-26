@@ -41,49 +41,49 @@ templateRules:
 
 personalRules:
     - id: 基金销售支出
-      when: <交易对手名称> ~ "基金销售有限公司" && <取出金额> != "" && <取出金额> != "0"
+      when: payee ~ "基金销售有限公司" && <取出金额> != "" && <取出金额> != "0"
       actions:
           to:
               account: Expenses:Investment:Funds
 
     - id: 基金销售收入
-      when: <交易对手名称> ~ "基金销售有限公司" && <存入金额> != "" && <存入金额> != "0"
+      when: payee ~ "基金销售有限公司" && <存入金额> != "" && <存入金额> != "0"
       actions:
           from:
               account: Expenses:Investment:Funds
 
     - id: 餐厅支出
-      when: <交易对手名称> ~ "餐厅" && <取出金额> != "" && <取出金额> != "0"
+      when: payee ~ "餐厅" && <取出金额> != "" && <取出金额> != "0"
       actions:
           to:
               account: Expenses:Food:Restaurant
 
     - id: 餐厅收入
-      when: <交易对手名称> ~ "餐厅" && <存入金额> != "" && <存入金额> != "0"
+      when: payee ~ "餐厅" && <存入金额> != "" && <存入金额> != "0"
       actions:
           from:
               account: Expenses:Food:Restaurant
 
     - id: 地铁支出
-      when: <交易对手名称> ~ "地铁" && <取出金额> != "" && <取出金额> != "0"
+      when: payee ~ "地铁" && <取出金额> != "" && <取出金额> != "0"
       actions:
           to:
               account: Expenses:Transport:Metro
 
     - id: 地铁收入
-      when: <交易对手名称> ~ "地铁" && <存入金额> != "" && <存入金额> != "0"
+      when: payee ~ "地铁" && <存入金额> != "" && <存入金额> != "0"
       actions:
           from:
               account: Expenses:Transport:Metro
 
     - id: 超市支出
-      when: <交易对手名称> ~ "超市" && <取出金额> != "" && <取出金额> != "0"
+      when: payee ~ "超市" && <取出金额> != "" && <取出金额> != "0"
       actions:
           to:
               account: Expenses:Shopping:Supermarket
 
     - id: 超市收入
-      when: <交易对手名称> ~ "超市" && <存入金额> != "" && <存入金额> != "0"
+      when: payee ~ "超市" && <存入金额> != "" && <存入金额> != "0"
       actions:
           from:
               account: Expenses:Shopping:Supermarket
