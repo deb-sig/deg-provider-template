@@ -48,7 +48,7 @@ templateRules:
 
 personalRules:
     - id: Rule1 BTC 买入
-      when: (<交易对> == "BTC/USDT" || <交易对> == "BTC1S/USDT") && <方向> == "买入" && <交易类型> == "币币交易"
+      when: (narration ~ "BTC/USDT" || narration ~ "BTC1S/USDT") && narration ~ "买入" && payee ~ "币币交易"
       actions:
           vars:
               cash: Assets:Rule1:Cash

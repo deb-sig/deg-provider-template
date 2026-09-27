@@ -26,7 +26,7 @@ personalRules:
               account: Expenses:FIXME
 
     - id: 欧科云链发送
-      when: <发送方> == 0x1429****7f855c
+      when: from == 0x1429****7f855c
       actions:
           payee: <接收方>
           narration: <代币符号> Send
@@ -42,7 +42,7 @@ personalRules:
               currency: <代币符号>
 
     - id: 欧科云链接收
-      when: <接收方> == 0x1429****7f855c
+      when: to == 0x1429****7f855c
       actions:
           payee: <发送方>
           narration: <代币符号> Receive
@@ -58,33 +58,33 @@ personalRules:
               currency: <代币符号>
 
     - id: USDT标签
-      when: <代币符号> == USDT
+      when: currency == USDT
       actions:
           tags:
               - Stablecoin
               - USDT
 
     - id: USDC标签
-      when: <代币符号> == USDC
+      when: currency == USDC
       actions:
           tags:
               - Stablecoin
               - USDC
 
     - id: USDC发送账户
-      when: <代币符号> == USDC && <发送方> == 0x1429****7f855c
+      when: currency == USDC && from == 0x1429****7f855c
       actions:
           from:
               account: Assets:Crypto:Ethereum:USDC
 
     - id: USDC接收账户
-      when: <代币符号> == USDC && <接收方> == 0x1429****7f855c
+      when: currency == USDC && to == 0x1429****7f855c
       actions:
           to:
               account: Assets:Crypto:Ethereum:USDC
 
     - id: USDT指定收入对手方
-      when: <代币符号> == USDT && <发送方> == 0xd854****c172b3 && <接收方> == 0x1429****7f855c
+      when: currency == USDT && from == 0xd854****c172b3 && to == 0x1429****7f855c
       actions:
           tags:
               - Receive
@@ -94,7 +94,7 @@ personalRules:
               account: Assets:Crypto:Ethereum:USDT
 
     - id: USDT指定支出对手方
-      when: <代币符号> == USDT && <发送方> == 0x1429****7f855c && <接收方> == 0x3ef4****f2768a
+      when: currency == USDT && from == 0x1429****7f855c && to == 0x3ef4****f2768a
       actions:
           tags:
               - Send
@@ -105,7 +105,7 @@ personalRules:
               account: Expenses:Food:Meal
 
     - id: 小额空投
-      when: <发送方> == 0x1429****7f855c && <数量> >= 1 && <数量> <= 10
+      when: from == 0x1429****7f855c && amount >= 1 && amount <= 10
       actions:
           tags:
               - SmallAirdrop

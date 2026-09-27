@@ -137,7 +137,7 @@ templateRules:
 
 personalRules:
     - id: Rule1 HS300ETF
-      when: <securityName> ~ "HS300ETF"
+      when: narration ~ "HS300ETF" || security_name ~ "HS300ETF"
       actions:
           vars:
               cash: Assets:Rule1:Cash
