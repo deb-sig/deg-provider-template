@@ -7,6 +7,7 @@ import { createRequire } from 'node:module';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const require = createRequire(new URL('../site/package.json', import.meta.url));
 const { parse } = require('yaml');
+const XLSX = require('xlsx');
 export function safeSegment(value) {
   if (typeof value !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9_.-]*$/.test(value) || value.includes('..')) throw new Error('Invalid path segment: ' + value);
   return value;
@@ -53,6 +54,24 @@ async function generate(repoRoot, output) {
       if (!doc || typeof doc.template !== 'object' || typeof doc.template.fileFormat !== 'string' || !rulesDoc || typeof rulesDoc !== 'object') throw new Error('Invalid YAML structure: ' + entry.id);
       const files = await readdir(path.join(repoRoot, entry.id, revision));
       const bills = await Promise.all(files.filter(f=>/^bill\.(csv|xlsx?|tsv)$/i.test(f)).sort().map(f=>asset(`${entry.id}/${revision}/${f}`)));
+      // Spreadsheet statements get a CSV preview so the site can show them as a table.
+      // The preview is a derived artifact: the original bytes keep their own hash/manifest entry.
+      for (const b of bills) {
+        if (!/\.xlsx?$/i.test(b.path)) continue;
+        const workbook = XLSX.read(await readFile(path.join(repoRoot, b.path)), { type: 'buffer' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        if (!sheet) continue;
+        const csv = XLSX.utils.sheet_to_csv(sheet, { blankrows: false });
+        const allLines = csv.split('\n');
+        const capped = allLines.slice(0, 150).join('\n');
+        const rel = b.path.replace(/\.xlsx?$/i, '.preview.csv');
+        const publicPath = 'providers/' + rel;
+        const target = path.join(output, publicPath);
+        await mkdir(path.dirname(target), { recursive: true });
+        await writeFile(target, capped);
+        const bytes = Buffer.from(capped, 'utf8');
+        b.preview = { path: rel, publicPath, bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex'), truncated: allLines.length > 150 };
+      }
       const expected = files.includes('expected.beancount') ? await asset(`${entry.id}/${revision}/expected.beancount`) : null;
       const manifest = {schemaVersion:1,id:entry.id,revision,meta:{...doc.template,schema:doc.schema || ''},artifacts:{template,rules,bills,expected}};
       const manifestPath = `releases/${entry.id}/${revision}.json`;
