@@ -64,8 +64,9 @@ pre.code.rule-source{margin-top:10px;max-height:320px;font-size:12px}
 .samples h2{margin-top:0}
 .samples .pair{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
 /* ---------- rule cards (condition -> action flow) ---------- */
-.rc-list{display:flex;flex-direction:column;gap:8px}
-.rc{position:relative;border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:11px 14px 11px 17px}
+/* Two cards per row on a wide column, one on narrow screens. */
+.rc-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(330px,100%),1fr));gap:8px;align-items:start}
+.rc{position:relative;border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:11px 14px 11px 17px;min-width:0}
 .rc::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--line)}
 .rc-ignore::before{background:var(--muted)}
 .rc-account::before{background:var(--accent)}
@@ -99,6 +100,10 @@ body.dark .chip-warn{color:#ffd33d}
 .rule-fields input,.rule-fields textarea{width:100%;margin-top:5px;font:12.5px/1.6 ui-monospace,monospace}
 .yaml-preview{margin-top:14px}
 .rules-editor textarea{font:12.5px/1.6 ui-monospace,monospace;min-height:220px}
+/* The full-width samples block sets its own columns; it must still stack on narrow screens. */
+@media(max-width:850px){
+  .samples .pair{grid-template-columns:1fr}
+}
 @media(max-width:540px){
   .block-head{flex-direction:column}
   .table-scroll{max-height:260px}
