@@ -1,47 +1,49 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { parseDocument, stringify, parse } from 'yaml';
+import { parse, stringify } from 'yaml';
 import { highlightYaml } from './yaml-highlight.mjs';
 import { ruleCard } from './rules-view.mjs';
+import { readRules, editRule, addRule, removeRule, toCards } from './rules-edit.mjs';
+import RuleCard from './RuleCard.vue';
 
 const props = defineProps({ provider: Object, starter: String, t: Function });
 
 const yaml = ref('');
 const status = ref('');
-const cards = ref([]);
 const file = ref(null);
 const view = ref('cards');
-const open = ref(new Set());
+const query = ref('');
+const openIndex = ref(-1);
+const draft = ref(null);
 
 const key = computed(() => `deg-provider-personal-rules:${props.provider.id}`);
 const lines = computed(() => highlightYaml(yaml.value));
 
-function document() {
-  const d = parseDocument(yaml.value);
-  if (d.errors.length || !Array.isArray(d.toJS()?.personalRules)) throw Error('invalid');
-  return d;
-}
+// Reads through the same pure helpers the tests exercise, so card edits and YAML edits
+// cannot drift apart.
+const describeRule = (rule) => ({ ...ruleCard(rule, props.t), when: rule.when || '', source: stringify(rule) });
+const cards = computed(() => {
+  try {
+    return toCards(yaml.value, describeRule);
+  } catch {
+    return [];
+  }
+});
 const valid = computed(() => {
   try {
-    document();
+    readRules(yaml.value);
     return true;
   } catch {
     return false;
   }
 });
+const filtered = computed(() => {
+  const q = query.value.trim().toLowerCase();
+  return cards.value
+    .map((card, index) => ({ card, index }))
+    .filter(({ card }) => (!q ? true : [card.id, card.when, card.actionsYaml].join(' ').toLowerCase().includes(q)));
+});
 
-function syncCards() {
-  try {
-    cards.value = document().toJS().personalRules.map((r) => ({
-      id: r.id || '',
-      when: r.when || '',
-      actions: stringify(r.actions || {}),
-      summary: ruleCard(r, props.t).summary,
-    }));
-  } catch {
-    cards.value = [];
-  }
-}
 function seed() {
   return stringify({ personalRules: parse(props.starter)?.personalRules || [] });
 }
@@ -54,7 +56,8 @@ watch(
       yaml.value = seed();
       status.value = 'storageError';
     }
-    syncCards();
+    openIndex.value = -1;
+    draft.value = null;
   },
   { immediate: true },
 );
@@ -66,46 +69,53 @@ watch(yaml, () => {
     status.value = 'storageError';
   }
 });
+
 function toggle(index) {
-  const next = new Set(open.value);
-  if (next.has(index)) next.delete(index);
-  else next.add(index);
-  open.value = next;
+  if (openIndex.value === index) {
+    openIndex.value = -1;
+    draft.value = null;
+    return;
+  }
+  const card = cards.value[index];
+  openIndex.value = index;
+  draft.value = { id: card.id, when: card.when, actions: card.actionsYaml };
 }
-// Card edits patch YAML nodes, so comments and untouched keys survive.
-function apply(index, card) {
+// While editing, the card chips follow the draft so the preview matches what will be saved.
+function liveCard(index) {
+  const card = cards.value[index];
+  if (openIndex.value !== index || !draft.value || !card) return card;
   try {
-    const d = document();
-    const actions = parseDocument(card.actions);
-    if (actions.errors.length) throw Error();
-    d.setIn(['personalRules', index, 'id'], card.id);
-    if (card.when) d.setIn(['personalRules', index, 'when'], card.when);
-    else d.deleteIn(['personalRules', index, 'when']);
-    d.setIn(['personalRules', index, 'actions'], actions.toJS());
-    yaml.value = d.toString();
-    syncCards();
+    const actions = parse(draft.value.actions) || {};
+    return { ...ruleCard({ id: draft.value.id, when: draft.value.when, actions }, props.t), actionsYaml: draft.value.actions };
+  } catch {
+    return card;
+  }
+}
+function apply() {
+  try {
+    yaml.value = editRule(yaml.value, openIndex.value, draft.value);
     status.value = 'valid';
+    openIndex.value = -1;
+    draft.value = null;
   } catch {
     status.value = 'invalid';
   }
 }
 function add() {
   try {
-    const d = document();
-    d.addIn(['personalRules'], { id: 'rule-' + (cards.value.length + 1), when: '', actions: {} });
-    yaml.value = d.toString();
-    syncCards();
-    open.value = new Set([...open.value, cards.value.length - 1]);
+    yaml.value = addRule(yaml.value, `${props.t('newRulePrefix')}-${cards.value.length + 1}`);
+    status.value = 'valid';
+    toggle(cards.value.length - 1);
   } catch {
     status.value = 'invalid';
   }
 }
 function remove(index) {
   try {
-    const d = document();
-    d.deleteIn(['personalRules', index]);
-    yaml.value = d.toString();
-    syncCards();
+    yaml.value = removeRule(yaml.value, index);
+    status.value = 'valid';
+    openIndex.value = -1;
+    draft.value = null;
   } catch {
     status.value = 'invalid';
   }
@@ -141,10 +151,8 @@ async function importFile(e) {
     const f = e.target.files[0];
     if (!f) return;
     const text = await f.text();
-    const d = parseDocument(text);
-    if (d.errors.length || !Array.isArray(d.toJS()?.personalRules)) throw Error();
+    readRules(text);
     yaml.value = text;
-    syncCards();
     status.value = 'valid';
   } catch {
     status.value = 'invalid';
@@ -154,8 +162,9 @@ async function importFile(e) {
 function reset() {
   if (confirm(props.t('confirmReset'))) {
     yaml.value = seed();
-    syncCards();
     status.value = '';
+    openIndex.value = -1;
+    draft.value = null;
   }
 }
 </script>
@@ -186,31 +195,41 @@ function reset() {
 
     <template v-if="view === 'cards'">
       <p v-if="!cards.length" class="muted">{{ t('noRules') }}</p>
-      <article v-for="(card, index) in cards" :key="index" class="rule-card-v">
-        <header>
-          <h3>{{ card.id || t('unnamedRule') }}</h3>
-          <button type="button" class="link-btn" @click="toggle(index)">
-            {{ open.has(index) ? t('collapse') : t('editRule') }}
-          </button>
-        </header>
-        <ul class="rule-summary">
-          <li v-for="(line, li) in card.summary" :key="li">{{ line }}</li>
-        </ul>
-        <div v-if="open.has(index)" class="rule-fields">
-          <label>{{ t('ruleId') }}<input v-model="card.id"></label>
-          <label>{{ t('when') }}<input v-model="card.when" spellcheck="false"></label>
-          <label>{{ t('actions') }}<textarea v-model="card.actions" rows="4" spellcheck="false"></textarea></label>
-          <div class="actions">
-            <button @click="apply(index, card)">{{ t('apply') }}</button>
-            <button @click="remove(index)">{{ t('deleteRule') }}</button>
-          </div>
+      <template v-else>
+        <div class="rules-tools">
+          <input v-model="query" type="search" :placeholder="t('searchRules')" :aria-label="t('searchRules')">
+          <span class="muted">{{ filtered.length }} / {{ cards.length }} {{ t('rulesCount') }}</span>
         </div>
-      </article>
+        <p v-if="!filtered.length" class="muted">{{ t('noMatch') }}</p>
+        <div class="rc-list">
+          <RuleCard
+            v-for="entry in filtered"
+            :key="entry.index"
+            :card="liveCard(entry.index)"
+            :t="t"
+            :open="openIndex === entry.index"
+            editable
+            @toggle="toggle(entry.index)"
+          >
+            <template #editor>
+              <div class="rule-fields">
+                <label>{{ t('ruleId') }}<input v-model="draft.id"></label>
+                <label>{{ t('when') }}<input v-model="draft.when" spellcheck="false" :placeholder="t('whenPlaceholder')"></label>
+                <label>{{ t('actions') }}<textarea v-model="draft.actions" rows="4" spellcheck="false"></textarea></label>
+                <div class="actions">
+                  <button @click="apply">{{ t('apply') }}</button>
+                  <button @click="remove(entry.index)">{{ t('deleteRule') }}</button>
+                </div>
+              </div>
+            </template>
+          </RuleCard>
+        </div>
+      </template>
     </template>
 
     <template v-else>
       <label for="rules-editor" class="muted">{{ t('viewYaml') }}</label>
-      <textarea id="rules-editor" data-testid="rules-editor" v-model="yaml" spellcheck="false" rows="16" @input="syncCards"></textarea>
+      <textarea id="rules-editor" data-testid="rules-editor" v-model="yaml" spellcheck="false" rows="16"></textarea>
       <details class="yaml-preview">
         <summary>{{ t('previewHighlighted') }}</summary>
         <pre class="code"><code><span

@@ -49,15 +49,23 @@ test('ruleCard renders ignore-style and multi-condition rules as prose', () => {
   const t = (k) => translate('zh-CN', k);
   const ignore = ruleCard({ id: '忽略关闭交易', when: '<交易状态> == 交易关闭', actions: { ignore: true } }, t);
   assert.equal(ignore.id, '忽略关闭交易');
-  assert.match(ignore.summary[0], /当 交易状态 为 交易关闭 时/);
-  assert.match(ignore.summary[1], /忽略/);
+  assert.equal(ignore.whenKind, 'simple');
+  assert.deepEqual(ignore.conditions, ['交易状态 为 交易关闭']);
+  assert.equal(ignore.joinText, '且');
+  assert.equal(ignore.actionKind, 'ignore');
+  assert.deepEqual(ignore.actions, ['忽略这笔']);
+  assert.equal(ignore.shortAction, '忽略这笔');
 
   const complex = ruleCard({ id: 'BTC', when: '(<a> == "x" || <b> == "y") && <c> == "z"', actions: { to: 'Assets:X' } }, t);
+  assert.equal(complex.whenKind, 'complex');
   assert.equal(complex.complex, true);
-  assert.match(complex.summary[0], /多条件/);
+  assert.equal(complex.actionKind, 'account');
+  assert.deepEqual(complex.actions, ['记入 Assets:X']);
 
   const template = ruleCard({ id: 'base', actions: { payee: 'X', vars: { a: '1' } } }, t);
-  assert.match(template.summary[0], /任何情况/);
+  assert.equal(template.whenKind, 'always');
+  assert.equal(template.actionKind, 'set');
+  assert.equal(template.conditions.length, 0);
 });
 
 test('parseDelimited handles quotes, CRLF, tabs and trailing newline', () => {

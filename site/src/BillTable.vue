@@ -43,11 +43,11 @@ watch(canTable, (ok) => { if (!ok) view.value = 'raw'; }, { immediate: true });
       <div class="table-scroll">
         <table>
           <thead>
-            <tr><th v-for="(h, i) in table.header" :key="i">{{ h }}</th></tr>
+            <tr><th v-for="(h, i) in table.header" :key="i" :title="String(h)">{{ h }}</th></tr>
           </thead>
           <tbody>
             <tr v-for="(r, ri) in table.body" :key="ri">
-              <td v-for="(c, ci) in r" :key="ci">{{ c }}</td>
+              <td v-for="(c, ci) in r" :key="ci" :title="String(c)" :class="{ 'is-long': String(c).length > 18 }">{{ c }}</td>
             </tr>
           </tbody>
         </table>

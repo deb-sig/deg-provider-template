@@ -120,22 +120,24 @@ export function actionTexts(actions, t) {
 export function ruleCard(rule, t) {
   const when = parseWhen(rule?.when);
   const actions = rule?.actions || {};
-  const summary = [];
-  if (when.empty) {
-    summary.push(t('whenAlways'));
-  } else if (when.complex) {
-    summary.push(t('whenComplex'));
-  } else {
-    const conds = conditionTexts(when, t);
-    const glue = when.join === 'or' ? ` ${t('joinOr')} ` : ` ${t('joinAnd')} `;
-    summary.push(`${t('whenPrefix')} ${conds.join(glue)}${t('whenSuffix')}`);
-  }
-  for (const line of actionTexts(actions, t)) summary.push(line);
+  const actionList = actionTexts(actions, t);
+  let whenKind = 'simple';
+  if (when.empty) whenKind = 'always';
+  else if (when.complex) whenKind = 'complex';
+  let kind = 'set';
+  if (actions.ignore === true) kind = 'ignore';
+  else if (actions.to || actions.from) kind = 'account';
+  const joinText = when.join === 'or' ? t('joinOr') : t('joinAnd');
   return {
     id: rule?.id || t('unnamedRule'),
     enabled: rule?.enabled !== false,
-    summary,
-    complex: when.complex,
+    whenKind,
+    complex: whenKind === 'complex',
+    conditions: whenKind === 'simple' ? conditionTexts(when, t) : [],
+    joinText,
+    actionKind: kind,
+    actions: actionList,
+    shortAction: actionList[0] || '',
     conditionCount: when.conds.length,
   };
 }
