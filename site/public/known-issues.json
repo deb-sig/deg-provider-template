@@ -1,0 +1,187 @@
+{
+  "source": "Historical local DEG sample validation",
+  "created": "2026-09-24T02:56:31.652511+08:00",
+  "executorSha256": "7d2a6cb62c00cee4fce46a48ec2d3a37b3b19bd7b13adcb025328f1820349d52",
+  "records": [
+    {
+      "id": "alipay",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": false,
+      "actual_errors": 0,
+      "expected_errors": 0,
+      "hashes": {
+        "rules.yaml": "737de42124ce08c964c638c4119cc4104b60abf383b1b1f28dcc7b717535b42b",
+        "bill.csv": "edcb546dee4505e0e1d8fceac47aa06c1521bf1f248ccd52ee07aa5f23a2934b",
+        "expected.beancount": "f370bea9826182d14e11bf29c049efb5b80a0c65d23f34391bc2b6d6b2eeeaae",
+        "template.yaml": "94722685083f4407f2cc2023208eb8f98e58d620b5053173ab8248de876c53f8"
+      }
+    },
+    {
+      "id": "oklink",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": true,
+      "actual_errors": 5370,
+      "expected_errors": 5370,
+      "hashes": {
+        "bill.csv": "b422508a06dcafddd6d0054aee8ff68fa54d0213f98b6c6af13c25aba5578801",
+        "expected.beancount": "848812ae9735ad7ffd6d121f25d9022c779e9edbcc097ed3c0fcabd5d6dafba9",
+        "rules.yaml": "f5c2f8d7172268a01a9ab935286939082d87e3bb6a23ad98abff2fba7f9a00df",
+        "template.yaml": "8d5775059bf90eb42a81230dda8f9da4e11b90fbe1bfc8c0e44725eae6a57783"
+      }
+    },
+    {
+      "id": "abc_debit",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": false,
+      "actual_errors": 0,
+      "expected_errors": 0,
+      "hashes": {
+        "rules.yaml": "6e038c795ac561e202d3619689f62494740c46443f9b7becdd8aed5067edc32a",
+        "bill.csv": "f787d3b0f55c2549c382db5efd919e3a26f657df987c3f0cf6fe07ef3f34fb9e",
+        "template.yaml": "6ad07c8daaa0b868c164a432798102d2efbfae6c8db9b7597a6560e250cd1b04",
+        "expected.beancount": "6ad6602ccc847d5ef1681d5aad998b1544b0c99e8140941091591f7938f4670f"
+      }
+    },
+    {
+      "id": "hsbchk-debit",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": false,
+      "actual_errors": 0,
+      "expected_errors": 0,
+      "hashes": {
+        "expected.beancount": "99d6594016481d442ce8e8bb28ec2b74ef93dafc4bb31d748130b1ebe2e3ff30",
+        "bill.csv": "9da1a53dd5f288c8b477e65d0b1aa55e80e95bfeab76ff92ef4b69f1a3cc97b2",
+        "rules.yaml": "3416602ec50ee41c313860131f0ed8e153a0df9bd6f2676741b7aac4344e37c6",
+        "template.yaml": "51592f725d76be703f26ba65765e6d1c20652cbb9a6eab65f819e6a11594a10c"
+      }
+    },
+    {
+      "id": "hsbchk-credit",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": false,
+      "actual_errors": 0,
+      "expected_errors": 0,
+      "hashes": {
+        "template.yaml": "d35eb3c8929a5d6a71ada88283211784e4a06661ff8f24bdca0537b7330d44ac",
+        "rules.yaml": "7add6716f4a823d7d7257fe711c40dce99ceffd0f6f4ba0a645b3839f7b105a2",
+        "expected.beancount": "75f8a9ea52e31c4c68b7a1d0581cabee1526a0b85e52d1ccab6099e07643aa54",
+        "bill.csv": "9a24a979adf15210224d30f85bf08bcf35cebc59c7bfcebbd04e3d8083dab452"
+      }
+    },
+    {
+      "id": "icbc-credit",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": false,
+      "actual_errors": 0,
+      "expected_errors": 0,
+      "hashes": {
+        "template.yaml": "e7f22be7675fec1c00ee52ff969c5d94cbfacb010d88b725bce1e71d76f4d0a4",
+        "expected.beancount": "3980c4f9cdc56b55f1d5b50db0042d490c2872f313d89db4d3135e20e429985b",
+        "rules.yaml": "c96c5f4c3ee2d9f49c549ee1b607b73fc8c3abc25921740e87fd0ceb64933b78",
+        "bill.csv": "c20a3d4fb7b324386ec1164ae0aa93c8b8071fccb9a62918ee000d60c19acecc"
+      }
+    },
+    {
+      "id": "icbc-debit-v1",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": false,
+      "actual_errors": 0,
+      "expected_errors": 0,
+      "hashes": {
+        "bill.csv": "1e061ac68a45825392a420013006cb322cbbfd7821c6addc44c4f138c194bffd",
+        "rules.yaml": "f14d8c8f596f7a789ebc283b3cd7a6fdfe4a5a338c149a64278a8f23b487a763",
+        "expected.beancount": "413afeca0cc2eb05c69559d4595b6aa99201f2764e16e0de4a9b82cc96d402d3",
+        "template.yaml": "8f0967a7b70d41661e73fa84547568a0a00bb1f5b4728a656f0e8301bd8738c0"
+      }
+    },
+    {
+      "id": "icbc-debit-v2",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": false,
+      "actual_errors": 0,
+      "expected_errors": 0,
+      "hashes": {
+        "bill.csv": "ed6f2d70dff46c0b444421a6b47757652dde3701ff1969bb57425a0d072f7a93",
+        "expected.beancount": "2dca17a07b4706ba8971585d87519e6c3f0de8fe87a72686bc8e01529948fe1a",
+        "template.yaml": "e357ea02b5ad434cead42ad95765c606f2a52c4ade5f0aecb215095e24ed356c",
+        "rules.yaml": "748ed5da04f966a3a258cfbd6b605c169a8d97b2159284d292c99f35bcddc789"
+      }
+    },
+    {
+      "id": "jd",
+      "init_exit": 0,
+      "import_exit": 1,
+      "match": false,
+      "actual_errors": null,
+      "expected_errors": 0,
+      "hashes": {
+        "expected.beancount": "14d4aca7aa35eea04a2d1e3ab016ce11a58506969c7dc12c8de32f55743a0dd6",
+        "template.yaml": "5de93d0346c4b51d1e0a15c3b8f51cc5cdc2b362f5852f09fbf8766138f2dcc2",
+        "bill.csv": "4f502c479c1d0bdd114acd75701170931c0de4c006a6cc8af0c4be91ae8a97da",
+        "rules.yaml": "8da41d4ef6c511535f64e0ce4ce8995b51156a6fa8be1f1dcf7e4f18e16c959f"
+      }
+    },
+    {
+      "id": "mt",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": true,
+      "actual_errors": 20,
+      "expected_errors": 20,
+      "hashes": {
+        "template.yaml": "575ba1ee6a49c269fb0663a7d1d8caf8b236168e46d22cb919c69f86a97468b8",
+        "rules.yaml": "4c8a69e053467ca8daf0450e6cfd8a5310a6eeb69411f900de42103bf123f2cc",
+        "bill.csv": "1431b9b9c6d98b135f3b68bc2e78690f4ccedb2ffc6b4679f81098a63c651eb5",
+        "expected.beancount": "0f70e778025006f7b6e1729c3603472d8ac44e79958c2075e0920849877442ef"
+      }
+    },
+    {
+      "id": "huobi",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": true,
+      "actual_errors": 2,
+      "expected_errors": 2,
+      "hashes": {
+        "expected.beancount": "4112237eba6bc4b0897d80768bb480ad0db30cf41d68e7eb37a8271e0c0c4eb9",
+        "rules.yaml": "18d89cbd4447663ccb1733c7bb26dd59457d41ed94ec736d8c226cd51b156ffc",
+        "bill.csv": "5362ed4155b41839ddc40f4d1e18e23a89426851718760a25e76cc652c38436c",
+        "template.yaml": "3d6674f62fda8ad5cc8081378c47e0642147915f7ba5977dc06092bb49d9494e"
+      }
+    },
+    {
+      "id": "htsec",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": false,
+      "actual_errors": 4,
+      "expected_errors": 4,
+      "hashes": {
+        "template.yaml": "f053e8814aa96aee80b8aba28db3993eb8f34c25820939e8e77df5a223a1062e",
+        "expected.beancount": "4f68198da9f0dd3ca50d4a6452ed24635e2277eeb55df9b7883b69ff1bc5d1c0",
+        "rules.yaml": "e26266cc5fde8163c7dc7f0dbadd60d4ec337f95ccd16aeb1b94dca46b6773cc"
+      }
+    },
+    {
+      "id": "hxsec",
+      "init_exit": 0,
+      "import_exit": 0,
+      "match": false,
+      "actual_errors": 0,
+      "expected_errors": 0,
+      "hashes": {
+        "expected.beancount": "f5e1c865aadf050ee05f418b383ec7c25d25fb2f72397eb88528db87db48af3a",
+        "rules.yaml": "2a41dd2ca7bca24d19f7f7767da17e197d75daf8e086e84e2a14897f1f3a6c1c",
+        "template.yaml": "3e894d9e1360b8674d5140633c3ef88a8c272b3b7187e019ee478e1013aaac37"
+      }
+    }
+  ]
+}
