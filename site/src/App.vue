@@ -82,8 +82,8 @@ const shareAvailable=computed(()=>canShareFiles(navigator,shareFiles.value));
 async function shareMirato(){
  const r=release.value;if(!r||!shareFiles.value.length)return;
  const status=await shareToMirato(navigator,shareFiles.value,`${provider.value.id}@${r.revision}`);
- if(status==='cancelled'){notice.value='';return;}
- notice.value='share'+status.charAt(0).toUpperCase()+status.slice(1);
+ // 成功与用户取消都不出提示：分享面板本身就是反馈。只在真的失败时给一行。
+ notice.value=(status==='error'||status==='blocked')?'shareError':'';
 }
 onMounted(()=>{loadCatalog();window.addEventListener('hashchange',navigate);media.addEventListener('change',setTheme);});
 onUnmounted(()=>{controller?.abort();window.removeEventListener('hashchange',navigate);media.removeEventListener('change',setTheme);});
@@ -121,7 +121,7 @@ onUnmounted(()=>{controller?.abort();window.removeEventListener('hashchange',nav
 <template v-else><div class="pair"><div><h3>{{t('bill')}}</h3><BillTable :bill="resources.bill" :bill-type="resources.billType" :converted="resources.billConverted===true" :t="t" /></div><div><h3>{{t('expected')}}</h3><CodeBlock :text="resources.expected||''" /><small v-if="!resources.expected">{{t('noSample')}}</small></div></div></template>
 </div>
 <div class="columns"><div>
-<section class="panel use-panel"><h2>{{t('use')}}</h2><p>{{t('useNote')}}</p><pre>{{command}}</pre><button @click="copy">{{t('copy')}}</button><button v-if="shareAvailable" data-testid="share-mirato" @click="shareMirato">{{t('shareToMirato')}}</button><div v-if="shareAvailable" class="notice" id="install-note">{{t('installNote')}}</div><small v-else class="muted" id="install-note">{{t('shareUnavailableNote')}}</small><p class="muted">{{t('runNote')}}</p></section>
+<section class="panel use-panel"><h2>{{t('use')}}</h2><p>{{t('useNote')}}</p><pre>{{command}}</pre><button @click="copy">{{t('copy')}}</button><button v-if="shareAvailable" data-testid="share-mirato" @click="shareMirato">{{t('shareToMirato')}}</button><p class="muted">{{t('runNote')}}</p></section>
 <template v-if="resources">
 <RulesCards :title="t('templateRulesTitle')" :rules="templateRules" :raw="templateRulesRaw" :t="t" />
 <details class="panel"><summary>{{t('source')}}</summary><h3>{{t('template')}}</h3><CodeBlock :text="resources.template" lang="text" /><h3>{{t('headers')}}</h3><CodeBlock :text="(release.meta.sourceHeaders||[]).join('\n')" lang="text" /></details>

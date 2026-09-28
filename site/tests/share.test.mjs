@@ -96,7 +96,7 @@ test('shareToMirato maps every outcome to a status the UI can translate', async 
 
 test('every share status has a message in all three locales', async () => {
   const { translate, locales } = await import('../src/i18n.mjs');
-  const keys = ['shareToMirato', 'shareShared', 'shareUnsupported', 'shareBlocked', 'shareError', 'installNote', 'shareUnavailableNote'];
+  const keys = ['shareToMirato', 'shareError'];
   for (const locale of locales) {
     for (const key of keys) {
       const value = translate(locale, key);
