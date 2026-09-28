@@ -1,6 +1,6 @@
 schema: https://deg.dev/template-profile/v2
 id: alipay
-name: 测试
+name: 支付宝账单
 template:
   fileFormat: csv
   encoding: gb18030
