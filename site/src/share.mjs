@@ -64,29 +64,25 @@ export function buildBundleText(resources, { id, revision } = {}) {
  * 执行分享，返回状态码（由调用方翻译成文案）：
  *   'shared' | 'cancelled' | 'blocked' | 'unsupported' | 'error'
  *
- * 策略：**优先按文件分享**（接收端拿到的是文件，语义更清楚）；
- * 若该设备拒绝文件分享（NotAllowedError / TypeError），立刻**回落到按文本分享** ——
- * 同一条系统面板，接收端改从 EXTRA_TEXT 取内容。用户取消（AbortError）不再重试。
+ * 为什么**只分享文本**，不分享文件 —— 两条真机实测结论（Pixel 10 / Chrome 153，adb + CDP 定位）：
+ *   1. `share({files})` 抛 `NotAllowedError: Permission denied`（即便 `canShare({files})` 返回 true），
+ *      而 `share({text})` 正常弹出系统面板；
+ *   2. 一次 `share()` 调用会**消耗 transient activation**，所以"先试文件、失败再回落文本"
+ *      在同一手势里做不到（回落那次已无手势，面板不弹）。
+ * 文本里带 `# mirato-template-bundle v1` 标记与 `---` 分隔的两份文档，接收端据此解析
+ * （Mirato 侧从 EXTRA_TEXT 取内容，不依赖文件分享能力）。
+ * buildShareFiles / canShareFiles 保留：给将来"下载模板文件"或支持文件分享的端用，已有单测覆盖。
  */
 export async function shareToMirato(nav, payload, title) {
-  const { files = [], text = '' } = payload || {};
+  const { text = '' } = payload || {};
   if (typeof nav?.share !== 'function') return 'unsupported';
-  const lastError = async (fn) => {
-    try {
-      await fn();
-      return 'shared';
-    } catch (error) {
-      if (error?.name === 'AbortError') return 'cancelled';
-      if (error?.name === 'NotAllowedError') return 'blocked';
-      return 'error';
-    }
-  };
-
-  if (files.length && canShareFiles(nav, files)) {
-    const first = await lastError(() => nav.share({ files, title }));
-    if (first === 'shared' || first === 'cancelled') return first;
-    // 文件被拒 → 回落文本
-  }
   if (!text) return 'unsupported';
-  return lastError(() => nav.share({ text, title }));
+  try {
+    await nav.share({ text, title });
+    return 'shared';
+  } catch (error) {
+    if (error?.name === 'AbortError') return 'cancelled';
+    if (error?.name === 'NotAllowedError') return 'blocked';
+    return 'error';
+  }
 }

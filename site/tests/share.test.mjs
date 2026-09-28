@@ -94,61 +94,34 @@ const payload = () => ({
   text: buildBundleText(resources, { id: 'alipay', revision: '2026-05-23' }),
 });
 
-test('shareToMirato prefers files and reports every outcome', async () => {
-  const ok = { share: async (data) => { ok.data = data; }, canShare: () => true };
-  assert.equal(await shareToMirato(ok, payload(), 'alipay@2026-05-23'), 'shared');
-  assert.equal(ok.data.files.length, 2, 'both files are handed over in one share');
-  assert.equal(ok.data.title, 'alipay@2026-05-23');
-  assert.equal(ok.data.text, undefined, '文件可用时不额外带文本');
-
-  const aborted = { share: async () => { throw named('AbortError'); }, canShare: () => true };
-  assert.equal(await shareToMirato(aborted, payload(), 't'), 'cancelled');
-
-  const broken = { share: async () => { throw named('DataError'); }, canShare: () => true };
-  assert.equal(await shareToMirato(broken, payload(), 't'), 'error');
-});
-
-// 实测 Pixel 10 / Chrome 153：canShare({files}) 为真，但 share({files}) 抛
-// NotAllowedError: Permission denied；而分享**文本**是允许的 → 必须自动回落。
-test('files denied by the device → falls back to sharing the bundle text', async () => {
+// 实测（Pixel 10 / Chrome 153）：share({files}) 抛 NotAllowedError: Permission denied，
+// 且一次 share() 会消耗 transient activation（失败后无法在同一手势里重试）→ 因此**只分享文本**。
+// 这条测试是防回归：不许再回到"先试文件再回落"的写法。
+test('shareToMirato shares the bundle text — and never wastes the gesture on files', async () => {
   const calls = [];
-  const nav = {
-    canShare: () => true,
-    share: async (data) => {
-      calls.push(data);
-      if (data.files) throw named('NotAllowedError');
-      nav.done = data;
-    },
-  };
-  assert.equal(await shareToMirato(nav, payload(), 't'), 'shared');
-  assert.equal(calls.length, 2, '先试文件，被拒后回落到文本');
-  assert.ok(calls[0].files, '第一次尝试是文件');
-  assert.ok(nav.done.text.startsWith('# mirato-template-bundle v1'), '第二次带的是模板包文本');
+  const nav = { share: async (data) => { calls.push(data); }, canShare: () => true };
+  assert.equal(await shareToMirato(nav, payload(), 'alipay@2026-05-23'), 'shared');
+  assert.equal(calls.length, 1, '一次点击只调用一次 share');
+  assert.equal(calls[0].files, undefined, '不尝试文件分享（会消耗手势且被设备拒绝）');
+  assert.equal(calls[0].title, 'alipay@2026-05-23');
+  assert.ok(calls[0].text.startsWith('# mirato-template-bundle v1'), '带模板包标记');
 });
 
-test('cancelled on files does not fall back (user said no)', async () => {
-  const calls = [];
-  const nav = { canShare: () => true, share: async (d) => { calls.push(d); throw named('AbortError'); } };
-  assert.equal(await shareToMirato(nav, payload(), 't'), 'cancelled');
-  assert.equal(calls.length, 1);
+test('shareToMirato reports every outcome the UI can translate', async () => {
+  const mk = (name) => ({ share: async () => { throw named(name); } });
+  assert.equal(await shareToMirato(mk('AbortError'), payload(), 't'), 'cancelled');
+  assert.equal(await shareToMirato(mk('NotAllowedError'), payload(), 't'), 'blocked');
+  assert.equal(await shareToMirato(mk('DataError'), payload(), 't'), 'error');
 });
 
-test('no share support, or nothing shareable → unsupported without calling share', async () => {
+test('no share API, or nothing shareable → unsupported without calling share', async () => {
   let called = 0;
-  // 设备说不能分享文件，但分享文本还是允许的 → 走文本
   const nav = { share: async () => { called += 1; }, canShare: () => false };
-  assert.equal(await shareToMirato(nav, payload(), 't'), 'shared');
+  assert.equal(await shareToMirato(nav, payload(), 't'), 'shared', '设备不支持文件分享也能走文本');
   assert.equal(called, 1);
-  // 完全没有内容 → 不调 share
   assert.equal(await shareToMirato(nav, { files: [], text: '' }, 't'), 'unsupported');
   assert.equal(called, 1);
-  // 浏览器没有 share API
   assert.equal(await shareToMirato(undefined, payload(), 't'), 'unsupported');
-});
-
-test('blocked on the text fallback is reported as blocked', async () => {
-  const nav = { canShare: () => false, share: async () => { throw named('NotAllowedError'); } };
-  assert.equal(await shareToMirato(nav, payload(), 't'), 'blocked');
 });
 
 test('every share status has a message in all three locales', async () => {
