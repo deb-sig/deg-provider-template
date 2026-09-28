@@ -176,7 +176,6 @@ export const messages = {
     "apply": "Apply card changes",
     "reset": "Reset from this revision",
     "confirmReset": "Replace your local draft with this revision’s starter rules?",
-    "runNote": "Browser execution is not connected. Use DEG locally; no statement upload is available.",
     "statement": "statement template"
   },
   "zh-CN": {
@@ -356,7 +355,6 @@ export const messages = {
     "apply": "应用卡片修改",
     "reset": "从此版本重置",
     "confirmReset": "用此版本初始规则替换本地草稿？",
-    "runNote": "浏览器执行尚未接入，请在本机使用 DEG，本站不提供账单上传。",
     "statement": "账单模板"
   },
   "zh-TW": {
@@ -536,7 +534,6 @@ export const messages = {
     "apply": "套用卡片修改",
     "reset": "從此版本重設",
     "confirmReset": "用此版本初始規則取代本機草稿？",
-    "runNote": "瀏覽器執行尚未接通，請在本機使用 DEG，本站不提供帳單上傳。",
     "statement": "帳單範本"
   }
 };

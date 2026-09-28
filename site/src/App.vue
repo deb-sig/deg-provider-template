@@ -8,7 +8,7 @@ import { parse, stringify } from 'yaml';
 import { detectLocale, translate } from './i18n.mjs';
 import { providerName, displayTag, names } from './presentation.mjs';
 import { selectRelease, parseRoute, knownIssueForRelease } from './catalog.mjs';
-import { buildShareFiles, canShareFiles, shareToMirato } from './share.mjs';
+import { buildBundleText, buildShareFiles, shareToMirato } from './share.mjs';
 const repo='https://github.com/deb-sig/deg-provider-template';
 const readSaved=(key)=>{try{return localStorage.getItem(key);}catch{return null;}};
 const locale=ref(detectLocale(readSaved('template-hub-locale'),navigator.languages));
@@ -46,7 +46,7 @@ const templateRulesRaw=computed(()=>templateRules.value.length?stringify({templa
 const downloads=computed(()=>{if(!release.value)return [];const a=release.value.artifacts;return [{...a.template,label:'template'},{...a.rules,label:'rules'},...a.bills.map(b=>({...b,label:'bill'})),...(a.expected?[{...a.expected,label:'expected'}]:[])];});
 let controller;let generation=0;
 async function loadResources(){
- controller?.abort();const token=++generation;controller=new AbortController();resources.value=null;shareFiles.value=[];resourceError.value='';notice.value='';
+ controller?.abort();const token=++generation;controller=new AbortController();resources.value=null;shareFiles.value=[];shareText.value='';resourceError.value='';notice.value='';
  if(!release.value)return;
  const r=release.value, signal=controller.signal;
  async function fetchBytes(a){const response=await fetch(assetUrl(a.publicPath),{signal});if(!response.ok)throw Error('loadError');const bytes=await response.arrayBuffer();if(bytes.byteLength!==a.bytes)throw Error('loadError');if(globalThis.crypto?.subtle){const digest=await crypto.subtle.digest('SHA-256',bytes);const hex=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');if(hex!==a.sha256)throw Error('loadError');}return bytes;}
@@ -61,6 +61,7 @@ async function loadResources(){
   if(token!==generation)return;
   resources.value={template:utf8.decode(template),rules:utf8.decode(rules),expected:expected?utf8.decode(expected):null,bill:billText,billType:!bill?'noSample':(isText||(isSheet&&billSource))?'text':'excel',billConverted:!!(isSheet&&billSource)};
   shareFiles.value=buildShareFiles(resources.value,{id:r.id,revision:r.revision});
+  shareText.value=buildBundleText(resources.value,{id:r.id,revision:r.revision});
  }catch(e){if(token===generation && e.name!=='AbortError')resourceError.value='loadError';}
 }
 watch([route,index],loadResources);
@@ -76,12 +77,13 @@ async function copy(){try{await navigator.clipboard.writeText(command.value);not
 // 「分享到 Mirato」：把页面已校验 sha256 的 template.yaml + rules.yaml 作为两个文件交给系统分享面板。
 // 文件类型必须是浏览器白名单内的（见 share.mjs 顶部说明，.yaml 不在其中）→ 一律 text/plain，靠内容辨认。
 const shareFiles=ref([]);
-// 可见性按**真实文件**判定（canShareFiles 会去问 navigator.canShare）：
-// 支持文件分享的浏览器（Android Chrome）才显示按钮，桌面 Firefox 之类显示替代指引。
-const shareAvailable=computed(()=>canShareFiles(navigator,shareFiles.value));
+const shareText=ref('');
+// 可见性：有内容且浏览器有分享能力就显示。文件分享被设备拒绝时由 shareToMirato 自动回落文本，
+// 所以这里不再只看 canShareFiles（实测有设备 canShare 为真但 share 被拒）。
+const shareAvailable=computed(()=>!!shareText.value&&typeof navigator?.share==='function');
 async function shareMirato(){
- const r=release.value;if(!r||!shareFiles.value.length)return;
- const status=await shareToMirato(navigator,shareFiles.value,`${provider.value.id}@${r.revision}`);
+ const r=release.value;if(!r||!shareText.value)return;
+ const status=await shareToMirato(navigator,{files:shareFiles.value,text:shareText.value},`${provider.value.id}@${r.revision}`);
  // 成功与用户取消都不出提示：分享面板本身就是反馈。只在真的失败时给一行。
  notice.value=(status==='error'||status==='blocked')?'shareError':'';
 }
@@ -121,7 +123,7 @@ onUnmounted(()=>{controller?.abort();window.removeEventListener('hashchange',nav
 <template v-else><div class="pair"><div><h3>{{t('bill')}}</h3><BillTable :bill="resources.bill" :bill-type="resources.billType" :converted="resources.billConverted===true" :t="t" /></div><div><h3>{{t('expected')}}</h3><CodeBlock :text="resources.expected||''" /><small v-if="!resources.expected">{{t('noSample')}}</small></div></div></template>
 </div>
 <div class="columns"><div>
-<section class="panel use-panel"><h2>{{t('use')}}</h2><p>{{t('useNote')}}</p><pre>{{command}}</pre><button @click="copy">{{t('copy')}}</button><button v-if="shareAvailable" data-testid="share-mirato" @click="shareMirato">{{t('shareToMirato')}}</button><p class="muted">{{t('runNote')}}</p></section>
+<section class="panel use-panel"><h2>{{t('use')}}</h2><p>{{t('useNote')}}</p><pre>{{command}}</pre><button @click="copy">{{t('copy')}}</button><button v-if="shareAvailable" data-testid="share-mirato" @click="shareMirato">{{t('shareToMirato')}}</button></section>
 <template v-if="resources">
 <RulesCards :title="t('templateRulesTitle')" :rules="templateRules" :raw="templateRulesRaw" :t="t" />
 <details class="panel"><summary>{{t('source')}}</summary><h3>{{t('template')}}</h3><CodeBlock :text="resources.template" lang="text" /><h3>{{t('headers')}}</h3><CodeBlock :text="(release.meta.sourceHeaders||[]).join('\n')" lang="text" /></details>

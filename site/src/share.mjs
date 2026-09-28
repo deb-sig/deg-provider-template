@@ -42,22 +42,51 @@ export function canShareFiles(nav, files) {
   }
 }
 
+/** 分享内容里带的标记行，接收端据此认出这是 Mirato 模板包（而不是用户随手分享的文本）。 */
+export const BUNDLE_MARKER = '# mirato-template-bundle v1';
+
+/**
+ * 把模板与规则拼成一份多文档 YAML 文本（`---` 分隔）。
+ * 用途：某些设备**不允许分享文件**（实测 Pixel 10 / Chrome 153：canShare 为 true，
+ * 但 share({files}) 抛 NotAllowedError: Permission denied），而分享**文本**是允许的。
+ * 接收端（Mirato）从 EXTRA_TEXT 拿到这段文本，按 `---` 切开即得两份文档；
+ * 头部注释带 id / revision，方便对齐版本。
+ */
+export function buildBundleText(resources, { id, revision } = {}) {
+  const template = resources?.template;
+  const rules = resources?.rules;
+  if (typeof template !== 'string' || typeof rules !== 'string') return '';
+  const head = [BUNDLE_MARKER, `# id: ${id || 'template'}`, `# revision: ${revision || ''}`];
+  return [...head, '---', template.trimEnd(), '---', rules.trimEnd(), ''].join('\n');
+}
+
 /**
  * 执行分享，返回状态码（由调用方翻译成文案）：
- *   'shared'      —— 用户已完成分享
- *   'cancelled'   —— 用户自己取消了（不提示，别打扰）
- *   'blocked'     —— 非用户手势触发（NotAllowedError）
- *   'unsupported' —— 浏览器/环境不支持分享文件
- *   'error'       —— 其它失败（DataError 等）
+ *   'shared' | 'cancelled' | 'blocked' | 'unsupported' | 'error'
+ *
+ * 策略：**优先按文件分享**（接收端拿到的是文件，语义更清楚）；
+ * 若该设备拒绝文件分享（NotAllowedError / TypeError），立刻**回落到按文本分享** ——
+ * 同一条系统面板，接收端改从 EXTRA_TEXT 取内容。用户取消（AbortError）不再重试。
  */
-export async function shareToMirato(nav, files, title) {
-  if (!canShareFiles(nav, files)) return 'unsupported';
-  try {
-    await nav.share({ files, title });
-    return 'shared';
-  } catch (error) {
-    if (error?.name === 'AbortError') return 'cancelled';
-    if (error?.name === 'NotAllowedError') return 'blocked';
-    return 'error';
+export async function shareToMirato(nav, payload, title) {
+  const { files = [], text = '' } = payload || {};
+  if (typeof nav?.share !== 'function') return 'unsupported';
+  const lastError = async (fn) => {
+    try {
+      await fn();
+      return 'shared';
+    } catch (error) {
+      if (error?.name === 'AbortError') return 'cancelled';
+      if (error?.name === 'NotAllowedError') return 'blocked';
+      return 'error';
+    }
+  };
+
+  if (files.length && canShareFiles(nav, files)) {
+    const first = await lastError(() => nav.share({ files, title }));
+    if (first === 'shared' || first === 'cancelled') return first;
+    // 文件被拒 → 回落文本
   }
+  if (!text) return 'unsupported';
+  return lastError(() => nav.share({ text, title }));
 }
