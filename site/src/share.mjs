@@ -1,17 +1,26 @@
 // 「分享到 Mirato」的纯逻辑（不碰 DOM，可单测）。
 //
-// 为什么要绕一层：Web Share API 分享**文件**时，浏览器只接受一份白名单里的 MIME 类型
-// （MDN "Shareable file types"：application/pdf、audio/*、image/*、text/css|csv|html|plain、video/*）。
-// `.yaml` / `text/yaml` **不在**白名单里 —— 直接以 text/yaml 分享会被 Chrome 拒绝
-// （canShare 返回 false，或 share 抛 TypeError）。
-// 所以这里的文件一律以 text/plain 交付，身份靠**内容**辨认（Mirato 侧同样按内容解析，不看扩展名）。
+// 为什么要绕一层：Web Share API 分享**文件**时，浏览器按白名单校验（MDN "Shareable file types"）：
+//   - MIME 只认 application/pdf、audio/*、image/*、text/css|csv|html|plain、video/*；
+//   - 扩展名也不认 .yaml（实测：.yaml 命名的文件 share() 直接 NotAllowedError，面板不弹；
+//     .txt / .csv 正常；而 canShare({files}) 对二者都返回 true，预判不了）。
+// 所以这里统一用 **`.txt` 名字 + `text/plain`**，内容仍是 YAML；接收端按内容辨认，不看扩展名。
 export const SHARE_MIME = 'text/plain';
 
-/** 分享给 Mirato 的文件名：`<id>-<revision>.template.yaml` / `<id>-<revision>.rules.yaml`。 */
+/**
+ * 分享给 Mirato 的文件名：`<id>.<revision>.template.txt` / `<id>.<revision>.rules.txt`。
+ *
+ * 为什么是 `.txt` 而不是 `.yaml` —— 真机实测（Pixel 10 / Chrome 153，真实点击逐个变体）：
+ *   `.yaml` 命名的文件 → share() 抛 `NotAllowedError: Permission denied`（面板不弹）
+ *   `.txt` / `.csv` 命名   → 正常弹出系统面板（单个、两个都行）
+ * 而 `canShare({files})` 对 **两者都返回 true** —— 预判不了，只能靠扩展名守规矩。
+ * 浏览器按扩展名对白名单校验（MDN "Shareable file types"），`.yaml` 不在其中。
+ * 所以载体用 `.txt`，内容仍是 YAML：接收端按内容解析，不看扩展名。
+ */
 export function shareFileName(id, revision, label) {
   const safeId = String(id || 'template').replace(/[^\w.-]+/g, '-');
   const safeRev = String(revision || '').replace(/[^\w.-]+/g, '-');
-  return [safeId, safeRev, label].filter(Boolean).join('.') + '.yaml';
+  return [safeId, safeRev, label].filter(Boolean).join('.') + '.txt';
 }
 
 /**
@@ -74,15 +83,21 @@ export function buildBundleText(resources, { id, revision } = {}) {
  * buildShareFiles / canShareFiles 保留：给将来"下载模板文件"或支持文件分享的端用，已有单测覆盖。
  */
 export async function shareToMirato(nav, payload, title) {
-  const { text = '' } = payload || {};
+  const { files = [], text = '' } = payload || {};
   if (typeof nav?.share !== 'function') return 'unsupported';
+  const attempt = async (data) => {
+    try {
+      await nav.share(data);
+      return 'shared';
+    } catch (error) {
+      if (error?.name === 'AbortError') return 'cancelled';
+      if (error?.name === 'NotAllowedError') return 'blocked';
+      return 'error';
+    }
+  };
+  // 走文件还是走文本，**在调用 share 之前一次决定**：share() 会消耗 transient activation，
+  // 失败后无法在同一手势里重试（实测过，回落那次面板不弹）。
+  if (files.length && canShareFiles(nav, files)) return attempt({ files, title });
   if (!text) return 'unsupported';
-  try {
-    await nav.share({ text, title });
-    return 'shared';
-  } catch (error) {
-    if (error?.name === 'AbortError') return 'cancelled';
-    if (error?.name === 'NotAllowedError') return 'blocked';
-    return 'error';
-  }
+  return attempt({ text, title });
 }

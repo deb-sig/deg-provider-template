@@ -8,7 +8,7 @@ import { parse, stringify } from 'yaml';
 import { detectLocale, translate } from './i18n.mjs';
 import { providerName, displayTag, names } from './presentation.mjs';
 import { selectRelease, parseRoute, knownIssueForRelease } from './catalog.mjs';
-import { buildBundleText, shareToMirato } from './share.mjs';
+import { buildBundleText, buildShareFiles, shareToMirato } from './share.mjs';
 const repo='https://github.com/deb-sig/deg-provider-template';
 const readSaved=(key)=>{try{return localStorage.getItem(key);}catch{return null;}};
 const locale=ref(detectLocale(readSaved('template-hub-locale'),navigator.languages));
@@ -46,7 +46,7 @@ const templateRulesRaw=computed(()=>templateRules.value.length?stringify({templa
 const downloads=computed(()=>{if(!release.value)return [];const a=release.value.artifacts;return [{...a.template,label:'template'},{...a.rules,label:'rules'},...a.bills.map(b=>({...b,label:'bill'})),...(a.expected?[{...a.expected,label:'expected'}]:[])];});
 let controller;let generation=0;
 async function loadResources(){
- controller?.abort();const token=++generation;controller=new AbortController();resources.value=null;shareText.value='';resourceError.value='';notice.value='';
+ controller?.abort();const token=++generation;controller=new AbortController();resources.value=null;shareFiles.value=[];shareText.value='';resourceError.value='';notice.value='';
  if(!release.value)return;
  const r=release.value, signal=controller.signal;
  async function fetchBytes(a){const response=await fetch(assetUrl(a.publicPath),{signal});if(!response.ok)throw Error('loadError');const bytes=await response.arrayBuffer();if(bytes.byteLength!==a.bytes)throw Error('loadError');if(globalThis.crypto?.subtle){const digest=await crypto.subtle.digest('SHA-256',bytes);const hex=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');if(hex!==a.sha256)throw Error('loadError');}return bytes;}
@@ -60,6 +60,7 @@ async function loadResources(){
   const billText=billBytes?(isSheet?utf8:new TextDecoder(r.meta.encoding||'utf-8',{fatal:true})).decode(billBytes):null;
   if(token!==generation)return;
   resources.value={template:utf8.decode(template),rules:utf8.decode(rules),expected:expected?utf8.decode(expected):null,bill:billText,billType:!bill?'noSample':(isText||(isSheet&&billSource))?'text':'excel',billConverted:!!(isSheet&&billSource)};
+  shareFiles.value=buildShareFiles(resources.value,{id:r.id,revision:r.revision});
   shareText.value=buildBundleText(resources.value,{id:r.id,revision:r.revision});
  }catch(e){if(token===generation && e.name!=='AbortError')resourceError.value='loadError';}
 }
@@ -75,12 +76,14 @@ watch([locale,route,provider],()=>{document.documentElement.lang=locale.value;do
 async function copy(){try{await navigator.clipboard.writeText(command.value);notice.value='copied';}catch{notice.value='copyError';}}
 // 「分享到 Mirato」：把页面已校验 sha256 的 template.yaml + rules.yaml 作为两个文件交给系统分享面板。
 // 文件类型必须是浏览器白名单内的（见 share.mjs 顶部说明，.yaml 不在其中）→ 一律 text/plain，靠内容辨认。
+const shareFiles=ref([]);
 const shareText=ref('');
-// 可见性：有内容且浏览器有分享能力就显示（实测：Android Chrome 只允许分享文本，不允许分享文件）。
+// 可见性：有内容 + 浏览器有 share 能力就显示。
+// 优先按文件分享（.txt 载体，内容 YAML）；只有浏览器明确不支持文件分享时才退成分享文本。
 const shareAvailable=computed(()=>!!shareText.value&&typeof navigator?.share==='function');
 async function shareMirato(){
  const r=release.value;if(!r||!shareText.value)return;
- const status=await shareToMirato(navigator,{text:shareText.value},`${provider.value.id}@${r.revision}`);
+ const status=await shareToMirato(navigator,{files:shareFiles.value,text:shareText.value},`${provider.value.id}@${r.revision}`);
  // 成功与用户取消都不出提示：分享面板本身就是反馈。只在真的失败时给一行。
  notice.value=(status==='error'||status==='blocked')?'shareError':'';
 }

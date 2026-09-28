@@ -28,29 +28,37 @@ const isShareable = (mime) =>
 const resources = { template: 'id: alipay\ntemplate:\n  fileFormat: csv\n', rules: 'templateRules:\n  - id: 基础交易\n' };
 
 test('shareFileName keeps id/revision readable and sanitized', () => {
-  assert.equal(shareFileName('alipay', '2026-05-23', 'template'), 'alipay.2026-05-23.template.yaml');
-  assert.equal(shareFileName('cmb-credit', '2026-05-01', 'rules'), 'cmb-credit.2026-05-01.rules.yaml');
+  assert.equal(shareFileName('alipay', '2026-05-23', 'template'), 'alipay.2026-05-23.template.txt');
+  assert.equal(shareFileName('cmb-credit', '2026-05-01', 'rules'), 'cmb-credit.2026-05-01.rules.txt');
   // 空白/斜杠/中文都收敛成可读文件名，不留路径分隔符
-  assert.equal(shareFileName('a/b c', '2026/05/23', 'template'), 'a-b-c.2026-05-23.template.yaml');
-  assert.equal(shareFileName('', '', 'rules'), 'template.rules.yaml');
+  assert.equal(shareFileName('a/b c', '2026/05/23', 'template'), 'a-b-c.2026-05-23.template.txt');
+  assert.equal(shareFileName('', '', 'rules'), 'template.rules.txt');
 });
 
 test('buildShareFiles hands over exactly the checked template and rules', async () => {
   const files = buildShareFiles(resources, { id: 'alipay', revision: '2026-05-23' });
   assert.equal(files.length, 2);
   assert.deepEqual(files.map((f) => f.name), [
-    'alipay.2026-05-23.template.yaml',
-    'alipay.2026-05-23.rules.yaml',
+    'alipay.2026-05-23.template.txt',
+    'alipay.2026-05-23.rules.txt',
   ]);
   assert.equal(await files[0].text(), resources.template);
   assert.equal(await files[1].text(), resources.rules);
 });
 
-test('every shared file uses a MIME type the Web Share API allows', () => {
+// 浏览器按**扩展名 + MIME** 双白名单校验：`.yaml` 命名的文件会被 share() 拒（实测 NotAllowedError，
+// 且 canShare({files}) 仍返回 true，骗人）。这条测试是拦回归的：名字必须是白名单扩展名。
+const SHAREABLE_EXT = ['pdf', 'flac', 'm4a', 'mp3', 'oga', 'ogg', 'opus', 'wav', 'weba',
+  'avif', 'bmp', 'gif', 'ico', 'jfif', 'jpeg', 'jpg', 'png', 'svg', 'tif', 'tiff', 'webp',
+  'css', 'csv', 'html', 'text', 'txt', 'm4v', 'mp4', 'mpeg', 'mpg', 'ogm', 'ogv', 'webm'];
+
+test('every shared file uses an allowed extension AND mime type', () => {
   const files = buildShareFiles(resources, { id: 'alipay', revision: '2026-05-23' });
   for (const file of files) {
     assert.equal(file.type, SHARE_MIME);
-    assert.ok(isShareable(file.type), `${file.type} is not shareable — .yaml must be sent as text/plain`);
+    assert.ok(isShareable(file.type), `${file.type} is not shareable`);
+    const ext = file.name.split('.').pop().toLowerCase();
+    assert.ok(SHAREABLE_EXT.includes(ext), `扩展名 .${ext} 不在浏览器白名单里（.yaml 会被 share() 拒绝）`);
   }
 });
 
@@ -94,17 +102,28 @@ const payload = () => ({
   text: buildBundleText(resources, { id: 'alipay', revision: '2026-05-23' }),
 });
 
-// 实测（Pixel 10 / Chrome 153）：share({files}) 抛 NotAllowedError: Permission denied，
-// 且一次 share() 会消耗 transient activation（失败后无法在同一手势里重试）→ 因此**只分享文本**。
-// 这条测试是防回归：不许再回到"先试文件再回落"的写法。
-test('shareToMirato shares the bundle text — and never wastes the gesture on files', async () => {
+// 实测（Pixel 10 / Chrome 153）：`.txt` 载体可以正常分享（两个文件也行），`.yaml` 会被拒；
+// 且一次 share() 会消耗 transient activation → 所以"走文件还是走文本"必须在调用前一次决定，
+// 不能失败后再回落。这两条测试把该决定钉住。
+test('shareToMirato hands over the two .txt files in a single share call', async () => {
   const calls = [];
   const nav = { share: async (data) => { calls.push(data); }, canShare: () => true };
   assert.equal(await shareToMirato(nav, payload(), 'alipay@2026-05-23'), 'shared');
   assert.equal(calls.length, 1, '一次点击只调用一次 share');
-  assert.equal(calls[0].files, undefined, '不尝试文件分享（会消耗手势且被设备拒绝）');
+  assert.deepEqual(calls[0].files.map((f) => f.name), [
+    'alipay.2026-05-23.template.txt',
+    'alipay.2026-05-23.rules.txt',
+  ]);
   assert.equal(calls[0].title, 'alipay@2026-05-23');
-  assert.ok(calls[0].text.startsWith('# mirato-template-bundle v1'), '带模板包标记');
+});
+
+test('falls back to the bundle text only when the browser cannot share files', async () => {
+  const calls = [];
+  const nav = { share: async (data) => { calls.push(data); }, canShare: () => false };
+  assert.equal(await shareToMirato(nav, payload(), 't'), 'shared');
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].files, undefined, '不支持文件分享时不尝试文件（会白费手势）');
+  assert.ok(calls[0].text.startsWith('# mirato-template-bundle v1'));
 });
 
 test('shareToMirato reports every outcome the UI can translate', async () => {
